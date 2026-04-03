@@ -1,0 +1,220 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix nac:  <http://purl.org/narn/action/> .
+@prefix nev:  <http://purl.org/narn/event/> .
+@prefix npl:  <http://purl.org/narn/plot/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+npl: a owl:Ontology ;
+    owl:imports nac: ;
+    owl:imports nev: ;
+    rdfs:label "Plot structure ontology"@en ;
+    rdfs:comment "An ontology module for the narrative and literary structure of stories, viewed from outside the fictional world. Provides classes for the five-act dramatic structure and properties to link the narrative skeleton to in-world events and characters."@en ;
+    dct:title "Plot Structure Ontology"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime ;
+    dct:description "Models the Freytag pyramid (Exposition → Rising Action → Climax → Falling Action → Resolution) as OWL classes, and connects them to events and characters from the story world. Rich axioms enforce that every story has exactly one Climax and that the Resolution always follows the Climax."@en .
+
+#
+# Classes
+#
+npl:Story a owl:Class ;
+    rdfs:label "story"@en ;
+    rdfs:comment "A complete narrative work with a defined beginning, middle, and end. May be fictional or a historical account."@en .
+
+npl:Chapter a owl:Class ;
+    rdfs:label "chapter"@en ;
+    rdfs:comment "A named or numbered subdivision of a story."@en .
+
+npl:PlotArc a owl:Class ;
+    rdfs:label "plot arc"@en ;
+    rdfs:comment "A thematic narrative trajectory within a story. A story may have multiple arcs (e.g. the arc of Túrin, the arc of Húrin's captivity)."@en .
+
+npl:PlotPoint a owl:Class ;
+    rdfs:label "plot point"@en ;
+    rdfs:comment "A single narrative moment or turning point that advances the plot."@en .
+
+npl:Exposition a owl:Class ;
+    rdfs:subClassOf npl:PlotPoint ;
+    rdfs:label "exposition"@en ;
+    rdfs:comment "The opening section that introduces the world, characters, and initial situation."@en .
+
+npl:RisingAction a owl:Class ;
+    rdfs:subClassOf npl:PlotPoint ;
+    rdfs:label "rising action"@en ;
+    rdfs:comment "Events and actions that build tension and lead toward the climax."@en .
+
+npl:Climax a owl:Class ;
+    rdfs:subClassOf npl:PlotPoint ;
+    rdfs:label "climax"@en ;
+    rdfs:comment "The moment of highest tension and the turning point of the story. Every story has exactly one climax."@en .
+
+npl:FallingAction a owl:Class ;
+    rdfs:subClassOf npl:PlotPoint ;
+    rdfs:label "falling action"@en ;
+    rdfs:comment "Events following the climax that lead toward the resolution."@en .
+
+npl:Resolution a owl:Class ;
+    rdfs:subClassOf npl:PlotPoint ;
+    rdfs:label "resolution"@en ;
+    rdfs:comment "The conclusion of the story in which conflicts are resolved (or left unresolved as tragedy). Also called dénouement."@en .
+
+npl:Subplot a owl:Class ;
+    rdfs:subClassOf npl:PlotArc ;
+    rdfs:label "subplot"@en ;
+    rdfs:comment "A secondary narrative arc that supports or contrasts the main plot."@en .
+
+npl:Tragedy a owl:Class ;
+    rdfs:subClassOf npl:Story ;
+    rdfs:label "tragedy"@en ;
+    rdfs:comment "A story in which the protagonist suffers a downfall, typically through a fatal flaw or external curse."@en .
+
+#
+# Object properties
+#
+npl:hasChapter a owl:ObjectProperty ;
+    rdfs:domain npl:Story ;
+    rdfs:range npl:Chapter ;
+    rdfs:label "has chapter"@en ;
+    rdfs:comment "Relates a story to one of its chapters."@en .
+
+npl:hasPlotArc a owl:ObjectProperty ;
+    rdfs:domain npl:Story ;
+    rdfs:range npl:PlotArc ;
+    rdfs:label "has plot arc"@en ;
+    rdfs:comment "Relates a story to one of its narrative arcs."@en .
+
+npl:hasPlotPoint a owl:ObjectProperty ;
+    rdfs:domain npl:PlotArc ;
+    rdfs:range npl:PlotPoint ;
+    rdfs:label "has plot point"@en ;
+    rdfs:comment "Relates a plot arc to one of its plot points."@en .
+
+npl:beginsWithEvent a owl:ObjectProperty ;
+    rdfs:domain [ owl:unionOf ( npl:Story npl:PlotArc ) ] ;
+    rdfs:range nev:Event ;
+    rdfs:label "begins with event"@en ;
+    rdfs:comment "The in-world event that marks the opening of the story or arc."@en .
+
+npl:endsWithEvent a owl:ObjectProperty ;
+    rdfs:domain [ owl:unionOf ( npl:Story npl:PlotArc ) ] ;
+    rdfs:range nev:Event ;
+    rdfs:label "ends with event"@en ;
+    rdfs:comment "The in-world event that marks the conclusion of the story or arc. Answers the competency question: what event ends story S?"@en .
+
+npl:hasProtagonist a owl:ObjectProperty ;
+    rdfs:domain npl:Story ;
+    rdfs:label "has protagonist"@en ;
+    rdfs:comment "The main character whose journey the story follows."@en .
+
+npl:hasAntagonist a owl:ObjectProperty ;
+    rdfs:domain npl:Story ;
+    rdfs:label "has antagonist"@en ;
+    rdfs:comment "The character or force that opposes the protagonist."@en .
+
+npl:follows a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+    rdfs:domain npl:PlotPoint ;
+    rdfs:range npl:PlotPoint ;
+    rdfs:label "follows"@en ;
+    rdfs:comment "One plot point comes narratively after another. Transitive and irreflexive."@en .
+
+npl:precedes a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+    owl:inverseOf npl:follows ;
+    rdfs:domain npl:PlotPoint ;
+    rdfs:range npl:PlotPoint ;
+    rdfs:label "precedes"@en ;
+    rdfs:comment "Inverse of follows."@en .
+
+npl:isSubplotOf a owl:ObjectProperty ;
+    rdfs:domain npl:Subplot ;
+    rdfs:range npl:Story ;
+    rdfs:label "is subplot of"@en ;
+    rdfs:comment "A subplot is embedded within a larger story."@en .
+
+npl:hasClimax a owl:ObjectProperty ;
+    rdfs:subPropertyOf npl:hasPlotPoint ;
+    rdfs:domain npl:Story ;
+    rdfs:range npl:Climax ;
+    rdfs:label "has climax"@en ;
+    rdfs:comment "Directly relates a story to its climax. Every story has exactly one climax."@en .
+
+npl:correspondsToEvent a owl:ObjectProperty ;
+    rdfs:domain npl:PlotPoint ;
+    rdfs:range nev:Event ;
+    rdfs:label "corresponds to event"@en ;
+    rdfs:comment "Links a narrative plot point to the in-world event it represents."@en .
+
+npl:hasFatalFlaw a owl:ObjectProperty ;
+    rdfs:domain npl:Tragedy ;
+    rdfs:label "has fatal flaw"@en ;
+    rdfs:comment "The character trait or circumstance that causes the tragic downfall in a tragedy."@en .
+
+#
+# Axioms
+#
+
+# Every story has exactly one climax
+npl:Story rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:hasClimax ;
+    owl:cardinality 1
+] .
+
+# The climax must precede the resolution (Freytag pyramid constraint)
+npl:Climax rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:precedes ;
+    owl:someValuesFrom npl:Resolution
+] .
+
+# The exposition precedes the rising action
+npl:Exposition rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:precedes ;
+    owl:someValuesFrom npl:RisingAction
+] .
+
+# The rising action precedes the climax
+npl:RisingAction rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:precedes ;
+    owl:someValuesFrom npl:Climax
+] .
+
+# The resolution follows the falling action
+npl:FallingAction rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:precedes ;
+    owl:someValuesFrom npl:Resolution
+] .
+
+# A tragedy has a protagonist who is the subject of at least one Death event
+npl:Tragedy rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:hasProtagonist ;
+    owl:someValuesFrom [
+        a owl:Restriction ;
+        owl:onProperty [ owl:inverseOf nev:hasSubject ] ;
+        owl:someValuesFrom nev:Death
+    ]
+] .
+
+# A story must have at least one plot arc
+npl:Story rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npl:hasPlotArc ;
+    owl:minCardinality 1
+] .
+
+# Plot points of different narrative stages are pairwise disjoint
+owl:AllDisjointClasses [
+    a owl:AllDisjointClasses ;
+    owl:members ( npl:Exposition npl:RisingAction npl:Climax npl:FallingAction npl:Resolution )
+] .
