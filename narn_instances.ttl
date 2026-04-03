@@ -1,0 +1,444 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix fo:   <http://purl.org/family/> .
+@prefix loc:  <http://purl.org/narn/social/> .
+@prefix meo:  <http://purl.org/meo/> .
+@prefix nac:  <http://purl.org/narn/action/> .
+@prefix narn: <http://purl.org/narn/> .
+@prefix nev:  <http://purl.org/narn/event/> .
+@prefix npl:  <http://purl.org/narn/plot/> .
+@prefix npo:  <http://purl.org/narn/place/> .
+@prefix nti:  <http://purl.org/narn/time/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+narn: a owl:Ontology ;
+    owl:imports npl: ;
+    owl:imports nac: ;
+    owl:imports nev: ;
+    owl:imports loc: ;
+    rdfs:label "Narn i Chîn Húrin — instances"@en ;
+    rdfs:comment "Concrete instances from the Narn i Chîn Húrin (Tale of the Children of Húrin) illustrating all ontology modules."@en ;
+    dct:title "Narn i Chîn Húrin Instances"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime .
+
+# ─────────────────────────────────────────────
+# CHARACTERS
+# ─────────────────────────────────────────────
+
+narn:hurin a meo:Adan, fo:Male ;
+    rdfs:label "Húrin"@en, "Húrin Thalion"@en ;
+    rdfs:comment "Lord of Dor-lómin, the steadfast. Captured by Morgoth at the Nirnaeth Arnoediad. His family is cursed."@en .
+
+narn:morwen a meo:Adan, fo:Female ;
+    rdfs:label "Morwen"@en, "Morwen Eledhwen"@en ;
+    rdfs:comment "Wife of Húrin, mother of Túrin and Nienor. Renowned for her beauty and stern spirit."@en .
+
+narn:turin a meo:Adan, fo:Male ;
+    rdfs:label "Túrin"@en, "Túrin Turambar"@en ;
+    rdfs:comment "Protagonist of the Narn. Son of Húrin, bearer of the cursed black sword Gurthang."@en .
+
+narn:nienor a meo:Adan, fo:Female ;
+    rdfs:label "Nienor"@en, "Nienor Níniel"@en ;
+    rdfs:comment "Daughter of Húrin, sister of Túrin. Cursed by Glaurung with amnesia."@en .
+
+narn:beleg a meo:Elda, fo:Male ;
+    rdfs:label "Beleg"@en, "Beleg Cúthalion"@en ;
+    rdfs:comment "Greatest archer of Doriath. Close companion and mentor figure to Túrin."@en .
+
+narn:finduilas a meo:Elda, fo:Female ;
+    rdfs:label "Finduilas"@en ;
+    rdfs:comment "Elven princess of Nargothrond. Daughter of Orodreth. Loved Túrin but was slain by orcs."@en .
+
+narn:glaurung a meo:LócÃ« ;
+    rdfs:label "Glaurung"@en ;
+    rdfs:comment "The first and greatest of the dragons, 'Father of Dragons'. Servant of Morgoth. Cursed Túrin and Nienor."@en .
+
+narn:melian a meo:Maia, fo:Female ;
+    rdfs:label "Melian"@en ;
+    rdfs:comment "Maia queen of Doriath, wife of Thingol. Her Girdle protected the realm."@en .
+
+narn:thingol a meo:Elda, fo:Male ;
+    rdfs:label "Thingol"@en, "Elwë"@en ;
+    rdfs:comment "King of Doriath. Exiled Túrin after the death of Saeros."@en .
+
+narn:brandir a meo:Adan, fo:Male ;
+    rdfs:label "Brandir"@en ;
+    rdfs:comment "Chieftain of the Haladin in Brethil. Lame and peaceable. Loved Nienor."@en .
+
+narn:mablung a meo:Elda, fo:Male ;
+    rdfs:label "Mablung"@en ;
+    rdfs:comment "Chief captain of Doriath. Accompanied Morwen and Nienor to find Túrin."@en .
+
+# ─────────────────────────────────────────────
+# FAMILY RELATIONS
+# ─────────────────────────────────────────────
+
+narn:hurin fo:isMarriedTo narn:morwen .
+narn:morwen fo:isMarriedTo narn:hurin .
+
+narn:turin fo:isASonOf narn:hurin ;
+           fo:isASonOf narn:morwen .
+
+narn:nienor fo:isADaughterOf narn:hurin ;
+            fo:isADaughterOf narn:morwen .
+
+narn:hurin fo:isAParentOf narn:turin ;
+           fo:isAParentOf narn:nienor .
+
+narn:morwen fo:isAParentOf narn:turin ;
+            fo:isAParentOf narn:nienor .
+
+narn:turin fo:isASibingOf narn:nienor .
+narn:nienor fo:isASibingOf narn:turin .
+
+narn:thingol fo:isMarriedTo narn:melian .
+narn:melian fo:isMarriedTo narn:thingol .
+
+# ─────────────────────────────────────────────
+# PLACES
+# ─────────────────────────────────────────────
+
+narn:beleriand a npo:GeographicRegion ;
+    rdfs:label "Beleriand"@en ;
+    rdfs:comment "The great land in the north-west of Middle-earth during the First Age."@en .
+
+narn:dorLomin a npo:GeographicRegion ;
+    rdfs:label "Dor-lómin"@en ;
+    rdfs:comment "The homeland of Húrin, a fief of Hithlum. Given by Morgoth to the Easterlings after Nirnaeth."@en ;
+    npo:isLocatedIn narn:beleriand .
+
+narn:doriath a npo:GeographicRegion ;
+    rdfs:label "Doriath"@en ;
+    rdfs:comment "The hidden kingdom of Thingol and Melian, protected by the Girdle of Melian."@en ;
+    npo:isLocatedIn narn:beleriand .
+
+narn:menegroth a npo:Cavern, npo:Settlement ;
+    rdfs:label "Menegroth"@en, "The Thousand Caves"@en ;
+    rdfs:comment "The underground city of Thingol and Melian, capital of Doriath."@en ;
+    npo:isSubpartOf narn:doriath .
+
+narn:nargothrond a npo:Cavern, npo:Fortress ;
+    rdfs:label "Nargothrond"@en ;
+    rdfs:comment "The great underground fortress on the River Narog, built by Finrod Felagund. Túrin became its de facto ruler."@en ;
+    npo:isLocatedIn narn:beleriand .
+
+narn:brethil a npo:Forest ;
+    rdfs:label "Brethil"@en ;
+    rdfs:comment "The forest between Doriath and Nargothrond, home of the Haladin. Túrin's last refuge."@en ;
+    npo:isLocatedIn narn:beleriand ;
+    npo:borders narn:doriath .
+
+narn:angband a npo:Fortress ;
+    rdfs:label "Angband"@en, "Hell of Iron"@en ;
+    rdfs:comment "The mighty fortress of Morgoth in the far north. Prison of Húrin."@en ;
+    npo:isDisconnectedFrom narn:nargothrond ;
+    npo:isDisconnectedFrom narn:doriath ;
+    npo:isDisconnectedFrom narn:brethil .
+
+narn:dimbar a npo:WildArea ;
+    rdfs:label "Dimbar"@en ;
+    rdfs:comment "The desolate land between the rivers Sirion and Mindeb, north of Doriath."@en ;
+    npo:isLocatedIn narn:beleriand ;
+    npo:borders narn:doriath .
+
+# ─────────────────────────────────────────────
+# TIME INTERVALS
+# ─────────────────────────────────────────────
+
+narn:tirNirnaeth a nti:TimeInterval ;
+    rdfs:label "time of Nirnaeth Arnoediad"@en ;
+    nti:hasBeginning 472 ;
+    nti:hasEnd 472 .
+
+narn:tirHurinCaptivity a nti:TimeInterval ;
+    rdfs:label "Húrin's captivity"@en ;
+    nti:hasBeginning 472 ;
+    nti:hasEnd 499 .
+
+narn:tirTurinYouth a nti:TimeInterval ;
+    rdfs:label "Túrin's youth in Doriath"@en ;
+    nti:hasBeginning 473 ;
+    nti:hasEnd 484 .
+
+narn:tirTurinExile a nti:TimeInterval ;
+    rdfs:label "Túrin's exile and wandering"@en ;
+    nti:hasBeginning 484 ;
+    nti:hasEnd 490 .
+
+narn:tirNargothrond a nti:TimeInterval ;
+    rdfs:label "Túrin's time in Nargothrond"@en ;
+    nti:hasBeginning 490 ;
+    nti:hasEnd 496 .
+
+narn:tirFallNargothrond a nti:TimeInterval ;
+    rdfs:label "Fall of Nargothrond"@en ;
+    nti:hasBeginning 496 ;
+    nti:hasEnd 496 .
+
+narn:tirTurinDeath a nti:TimeInterval ;
+    rdfs:label "Túrin's death"@en ;
+    nti:hasBeginning 499 ;
+    nti:hasEnd 499 .
+
+# Temporal ordering
+narn:tirNirnaeth      nti:before narn:tirHurinCaptivity .
+narn:tirHurinCaptivity nti:contains narn:tirTurinYouth .
+narn:tirTurinYouth    nti:before narn:tirTurinExile .
+narn:tirTurinExile    nti:before narn:tirNargothrond .
+narn:tirNargothrond   nti:before narn:tirFallNargothrond .
+narn:tirFallNargothrond nti:before narn:tirTurinDeath .
+
+# ─────────────────────────────────────────────
+# EVENTS
+# ─────────────────────────────────────────────
+
+narn:nirnaeth a nev:Battle, nev:War ;
+    rdfs:label "Nirnaeth Arnoediad"@en, "Battle of Unnumbered Tears"@en ;
+    rdfs:comment "The catastrophic fifth battle of Beleriand in which the armies of Elves and Men were defeated by Morgoth."@en ;
+    nev:occursAt narn:beleriand ;
+    nev:involvesCharacter narn:hurin ;
+    nev:involvesCharacter meo:morgoth ;
+    nev:hasAgent meo:morgoth ;
+    nev:hasTemporalExtent narn:tirNirnaeth .
+
+narn:hurinCapture a nev:Capture ;
+    rdfs:label "Capture of Húrin"@en ;
+    rdfs:comment "Húrin is taken alive by Morgoth after the Nirnaeth, the last to be captured."@en ;
+    nev:occursAt narn:angband ;
+    nev:hasSubject narn:hurin ;
+    nev:hasAgent meo:morgoth ;
+    nev:hasTemporalExtent narn:tirNirnaeth ;
+    nev:causedBy narn:nirnaeth .
+
+narn:morgothCurse a nev:Curse ;
+    rdfs:label "Curse of Morgoth on Húrin's house"@en ;
+    rdfs:comment "Morgoth lays a doom of sorrow on the children of Húrin."@en ;
+    nev:occursAt narn:angband ;
+    nev:hasSubject narn:turin ;
+    nev:hasSubject narn:nienor ;
+    nev:hasAgent meo:morgoth ;
+    nev:causedBy narn:hurinCapture .
+
+narn:turinArrivalDoriath a nev:Journey ;
+    rdfs:label "Túrin's arrival in Doriath"@en ;
+    rdfs:comment "Túrin is brought to Doriath and fostered by Thingol."@en ;
+    nev:hasDeparturePlace narn:dorLomin ;
+    nev:hasArrivalPlace narn:menegroth ;
+    nev:involvesCharacter narn:turin ;
+    nev:hasTemporalExtent narn:tirTurinYouth .
+
+narn:turinExile a nev:Exile ;
+    rdfs:label "Túrin's exile from Doriath"@en ;
+    rdfs:comment "Túrin flees Doriath after the death of Saeros, fearing Thingol's judgment."@en ;
+    nev:occursAt narn:doriath ;
+    nev:hasSubject narn:turin ;
+    nev:hasTemporalExtent narn:tirTurinExile .
+
+narn:belegDeath a nev:Death ;
+    rdfs:label "Death of Beleg"@en ;
+    rdfs:comment "Túrin, confused and half-mad after rescue, kills his companion Beleg by accident."@en ;
+    nev:occursAt narn:dimbar ;
+    nev:hasSubject narn:beleg ;
+    nev:hasAgent narn:turin ;
+    nev:hasTemporalExtent narn:tirTurinExile .
+
+narn:fallOfNargothrond a nev:Battle ;
+    rdfs:label "Fall of Nargothrond"@en ;
+    rdfs:comment "Glaurung leads Morgoth's forces to destroy Nargothrond. Finduilas is captured and later slain. This is the climax of the story."@en ;
+    nev:occursAt narn:nargothrond ;
+    nev:involvesCharacter narn:turin ;
+    nev:involvesCharacter narn:glaurung ;
+    nev:involvesCharacter narn:finduilas ;
+    nev:involvesCharacter meo:morgoth ;
+    nev:hasTemporalExtent narn:tirFallNargothrond ;
+    nev:causedBy narn:morgothCurse .
+
+narn:glaurungCurse a nev:Curse ;
+    rdfs:label "Glaurung's curse on Nienor"@en ;
+    rdfs:comment "Glaurung meets Nienor at the ford of Nargothrond and strips her memory with his gaze."@en ;
+    nev:occursAt narn:nargothrond ;
+    nev:hasSubject narn:nienor ;
+    nev:hasAgent narn:glaurung ;
+    nev:causedBy narn:fallOfNargothrond .
+
+narn:finduilasDeath a nev:Death ;
+    rdfs:label "Death of Finduilas"@en ;
+    rdfs:comment "Finduilas is slain by orcs on the road after the fall of Nargothrond."@en ;
+    nev:occursAt narn:brethil ;
+    nev:hasSubject narn:finduilas ;
+    nev:causedBy narn:fallOfNargothrond .
+
+narn:turinKillsGlaurung a nev:Death ;
+    rdfs:label "Túrin slays Glaurung"@en ;
+    rdfs:comment "Túrin stabs Glaurung from beneath at the ravine of Cabed-en-Aras. As the dragon dies, Nienor remembers who she is."@en ;
+    nev:occursAt narn:brethil ;
+    nev:hasSubject narn:glaurung ;
+    nev:hasAgent narn:turin ;
+    nev:hasTemporalExtent narn:tirTurinDeath .
+
+narn:nienorDeath a nev:Death ;
+    rdfs:label "Death of Nienor"@en ;
+    rdfs:comment "Nienor, her memory restored, realises she has unknowingly married her own brother and throws herself into the river Teiglin."@en ;
+    nev:occursAt narn:brethil ;
+    nev:hasSubject narn:nienor ;
+    nev:causedBy narn:turinKillsGlaurung .
+
+narn:turinDeath a nev:Death ;
+    rdfs:label "Death of Túrin"@en ;
+    rdfs:comment "Túrin, learning of Nienor's fate, commands his black sword Gurthang to slay him. The sword obeys."@en ;
+    nev:occursAt narn:brethil ;
+    nev:hasSubject narn:turin ;
+    nev:hasTemporalExtent narn:tirTurinDeath ;
+    nev:causedBy narn:nienorDeath .
+
+# Event ordering
+narn:nirnaeth        nev:precedes narn:hurinCapture .
+narn:hurinCapture    nev:precedes narn:morgothCurse .
+narn:morgothCurse    nev:precedes narn:turinExile .
+narn:turinExile      nev:precedes narn:belegDeath .
+narn:belegDeath      nev:precedes narn:fallOfNargothrond .
+narn:fallOfNargothrond nev:precedes narn:glaurungCurse .
+narn:fallOfNargothrond nev:precedes narn:finduilasDeath .
+narn:turinKillsGlaurung nev:precedes narn:nienorDeath .
+narn:nienorDeath     nev:precedes narn:turinDeath .
+
+# ─────────────────────────────────────────────
+# ACTIONS (with instruments, agents, patients)
+# ─────────────────────────────────────────────
+
+narn:gurthang a nac:Weapon ;
+    rdfs:label "Gurthang"@en, "Iron of Death"@en ;
+    rdfs:comment "Túrin's cursed black sword, reforged from the broken blade Anglachel."@en .
+
+narn:turinSuicide a nac:IntentionalAction, nac:ViolentAction ;
+    rdfs:label "Túrin's suicide"@en ;
+    rdfs:comment "Túrin commands Gurthang to slay him. An intentional, physical, and violent action directed at himself."@en ;
+    nac:hasAgent narn:turin ;
+    nac:hasPatient narn:turin ;
+    nac:hasInstrument narn:gurthang ;
+    nac:hasPurpose narn:turinDeath ;
+    nev:occursAt narn:brethil .
+
+narn:turinKillsBelegAction a nac:UnintentionalAction, nac:ViolentAction ;
+    rdfs:label "Túrin kills Beleg (accidental)"@en ;
+    rdfs:comment "Túrin, startled awake in darkness, mistakes Beleg for an enemy and slays him. An unintentional violent act."@en ;
+    nac:hasAgent narn:turin ;
+    nac:hasPatient narn:beleg ;
+    nac:hasInstrument narn:gurthang ;
+    nac:hasResult narn:belegDeath ;
+    nev:occursAt narn:dimbar .
+
+narn:morgothCurseAction a nac:IntentionalAction, nac:SpeechAct, nac:CoerciveAction ;
+    rdfs:label "Morgoth's curse (speech act)"@en ;
+    rdfs:comment "Morgoth pronounces the doom on Húrin's family. An intentional speech act with coercive effect."@en ;
+    nac:hasAgent meo:morgoth ;
+    nac:hasPatient narn:turin ;
+    nac:hasPatient narn:nienor ;
+    nac:hasPurpose narn:morgothCurse ;
+    nac:hasResult narn:morgothCurse ;
+    nev:occursAt narn:angband .
+
+# ─────────────────────────────────────────────
+# SOCIAL RELATIONS
+# ─────────────────────────────────────────────
+
+narn:hurin loc:isEnemyOf meo:morgoth .
+meo:morgoth loc:isEnemyOf narn:hurin .
+
+narn:beleg loc:isMentorOf narn:turin .
+narn:turin loc:isProtégeOf narn:beleg .
+
+narn:turin loc:isFriendOf narn:beleg .
+narn:beleg loc:isFriendOf narn:turin .
+
+narn:thingol loc:isLordOf narn:doriath .
+narn:turin loc:isVassalOf narn:thingol .
+
+narn:glaurung loc:isEnemyOf narn:turin .
+narn:turin loc:isEnemyOf narn:glaurung .
+
+narn:morwen loc:isAllyOf narn:beleg .
+
+# Social groups
+narn:nargothrondFellowship a loc:Fellowship ;
+    rdfs:label "Fellowship of Nargothrond"@en ;
+    rdfs:comment "The company of warriors and elves dwelling in Nargothrond."@en .
+
+narn:houseOfHadorKingdom a loc:Kingdom ;
+    rdfs:label "House of Hador"@en ;
+    rdfs:comment "The noble house of Men to which Húrin and Túrin belong."@en .
+
+narn:turin loc:isMemberOf narn:nargothrondFellowship .
+narn:finduilas loc:isMemberOf narn:nargothrondFellowship .
+
+narn:hurin loc:isMemberOf narn:houseOfHadorKingdom .
+narn:turin loc:isMemberOf narn:houseOfHadorKingdom .
+narn:morwen loc:isMemberOf narn:houseOfHadorKingdom .
+
+# ─────────────────────────────────────────────
+# PLOT STRUCTURE
+# ─────────────────────────────────────────────
+
+narn:narnStory a npl:Story, npl:Tragedy ;
+    rdfs:label "Narn i Chîn Húrin"@en, "Tale of the Children of Húrin"@en ;
+    rdfs:comment "The tragedy of Túrin Turambar and his sister Nienor, cursed by Morgoth through their father Húrin."@en ;
+    npl:hasProtagonist narn:turin ;
+    npl:hasAntagonist meo:morgoth ;
+    npl:hasAntagonist narn:glaurung ;
+    npl:beginsWithEvent narn:nirnaeth ;
+    npl:endsWithEvent narn:turinDeath ;
+    npl:hasPlotArc narn:arcTurin ;
+    npl:hasPlotArc narn:arcHurin .
+
+# Túrin's main arc
+narn:arcTurin a npl:PlotArc ;
+    rdfs:label "Arc of Túrin Turambar"@en ;
+    npl:beginsWithEvent narn:turinArrivalDoriath ;
+    npl:endsWithEvent narn:turinDeath ;
+    npl:hasPlotPoint narn:expNarn ;
+    npl:hasPlotPoint narn:risingNarn ;
+    npl:hasPlotPoint narn:climaxNarn ;
+    npl:hasPlotPoint narn:fallingNarn ;
+    npl:hasPlotPoint narn:resolutionNarn .
+
+narn:arcHurin a npl:PlotArc ;
+    rdfs:label "Arc of Húrin's captivity"@en ;
+    npl:beginsWithEvent narn:nirnaeth ;
+    npl:endsWithEvent narn:hurinCapture .
+
+# Plot points
+narn:expNarn a npl:Exposition ;
+    rdfs:label "Exposition: Húrin and the Nirnaeth"@en ;
+    npl:correspondsToEvent narn:nirnaeth ;
+    npl:precedes narn:risingNarn .
+
+narn:risingNarn a npl:RisingAction ;
+    rdfs:label "Rising action: Túrin's exile and wandering"@en ;
+    npl:correspondsToEvent narn:turinExile ;
+    npl:precedes narn:climaxNarn .
+
+narn:climaxNarn a npl:Climax ;
+    rdfs:label "Climax: Fall of Nargothrond"@en ;
+    npl:correspondsToEvent narn:fallOfNargothrond ;
+    npl:precedes narn:fallingNarn .
+
+narn:fallingNarn a npl:FallingAction ;
+    rdfs:label "Falling action: Glaurung's curse on Nienor"@en ;
+    npl:correspondsToEvent narn:glaurungCurse ;
+    npl:precedes narn:resolutionNarn .
+
+narn:resolutionNarn a npl:Resolution ;
+    rdfs:label "Resolution: death of Túrin and Nienor"@en ;
+    npl:correspondsToEvent narn:turinDeath .
+
+# The climax of the story is the Fall of Nargothrond
+narn:narnStory npl:hasClimax narn:climaxNarn .
+narn:narnStory npl:hasFatalFlaw narn:morgothCurse .
