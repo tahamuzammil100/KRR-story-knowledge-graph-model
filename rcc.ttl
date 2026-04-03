@@ -1,0 +1,68 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rcc: <https://purl.org/region/rcc8/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+#
+# Ontology description
+#
+rcc: a owl:Ontology;
+    rdfs:label "The RCC8 ontology";
+    rdfs:comment "An ontology for the Region Connection Calculus."@en .
+
+#
+# Class
+#
+rcc:Region a owl:Class;
+    rdfs:label "region"@en;
+    rdfs:comment "A continuous extent of space. Mathematically, given a topological space, this concepts corresponds to a compact subspace with finite diameter."@en .
+
+#
+# Properties
+# (you should add additional axioms, as needed, to enrich the knowledge and allow additional deductions)
+#
+rcc:dc a owl:ObjectProperty;
+    rdfs:label "disconnected"@en;
+    rdfs:comment "The two regions are completely disconnected (there are no common pieces)."@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:ec a owl:ObjectProperty;
+    rdfs:label "externally connected"@en;
+    rdfs:comment "the boundaries of the regions touch, but their interiors are disjoint"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:po a owl:ObjectProperty;
+    rdfs:label "partially overlapping"@en;
+    rdfs:comment "the two regions partially overlap (there are disjoint sub parts, and some part of one is included in some part of the other"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:eq a owl:ObjectProperty;
+    rdfs:label "equal"@en;
+    rdfs:comment "two regions have the same spatial extent"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:tpp a owl:ObjectProperty;
+    rdfs:label "tangential proper part"@en;
+    rdfs:comment "the first region is entirely inside the second region and their boundaries touch each other from the inside"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:tppi a owl:ObjectProperty;
+    rdfs:label "tangential proper part inverse"@en;
+    rdfs:comment "the first region entirely contains the second region and their boundaries touch each other from the inside"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:ntpp a owl:ObjectProperty;
+    rdfs:label "non-tangential proper part	the first region is entirely inside the second region and their boundaries do not touch"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
+
+rcc:ntppi a owl:ObjectProperty;
+    rdfs:label "non-tangential proper part inverse"@en;
+    rdfs:comment "the first region entirely contains the second region and their boundaries do not touch"@en;
+    rdfs:domain rcc:Region;
+    rdfs:range rcc:Region .
