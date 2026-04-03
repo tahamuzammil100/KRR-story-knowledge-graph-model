@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRR Story Knowledge Model — Documentation</title>
+  <style>
+    body { font-family: Georgia, serif; max-width: 960px; margin: 2em auto; padding: 0 1em; color: #222; }
+    h1 { border-bottom: 3px solid #8b0000; padding-bottom: 0.3em; }
+    h2 { border-bottom: 1px solid #ccc; margin-top: 2em; color: #8b0000; }
+    h3 { color: #444; }
+    code, pre { background: #f5f5f5; border: 1px solid #ddd; border-radius: 3px; }
+    code { padding: 2px 5px; font-size: 0.9em; }
+    pre { padding: 1em; overflow-x: auto; font-size: 0.85em; }
+    table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+    th { background: #f0e8e8; }
+    .module-tag { display: inline-block; background: #8b0000; color: white; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; margin-left: 0.5em; }
+    .axiom-box { background: #fff8e1; border-left: 4px solid #f9a825; padding: 0.8em 1em; margin: 1em 0; }
+    .cq { background: #e8f5e9; border-left: 4px solid #388e3c; padding: 0.8em 1em; margin: 0.5em 0; }
+    nav { background: #f9f9f9; border: 1px solid #ddd; padding: 1em; margin-bottom: 2em; }
+    nav ul { margin: 0; padding-left: 1.5em; }
+    nav li { margin: 0.2em 0; }
+    a { color: #8b0000; }
+  </style>
+</head>
+<body>
+
+<h1>KRR Story Knowledge Model</h1>
+<p><em>An OWL ontology for modelling story plots, exemplified by the <strong>Narn i Chîn Húrin</strong> (Tale of the Children of Húrin) from J.R.R. Tolkien's legendarium.</em></p>
+<p><strong>Course:</strong> Knowledge Representation and Reasoning &nbsp;|&nbsp; <strong>Deadline:</strong> April 5th, 2026</p>
+
+<nav>
+  <strong>Contents</strong>
+  <ul>
+    <li><a href="#overview">1. Overview &amp; Architecture</a></li>
+    <li><a href="#place">2. Place Module</a></li>
+    <li><a href="#social">3. Social Relations Module</a></li>
+    <li><a href="#time">4. Time Module</a></li>
+    <li><a href="#event">5. Event Module</a></li>
+    <li><a href="#action">6. Action Module</a></li>
+    <li><a href="#plot">7. Plot Structure Module</a></li>
+    <li><a href="#instances">8. Narn Instances</a></li>
+    <li><a href="#cq">9. Competency Questions</a></li>
+    <li><a href="#design">10. Design Choices</a></li>
+    <li><a href="#ai">11. AI Tool Usage</a></li>
+  </ul>
+</nav>
+
+<!-- ─────────────────────────────── 1. OVERVIEW ─────────────────────────────── -->
+<h2 id="overview">1. Overview &amp; Architecture</h2>
+
+<p>The ontology is split into seven modules plus the instance file. Modules import each other in a directed acyclic graph:</p>
+
+<pre>
+rcc.ttl (given)    fo.ttl (given)    meo.ttl (given, imports fo)
+     |                   |                  |
+     v                   v                  v
+place.ttl          social.ttl          time.ttl
+      \                  |              /
+       \                 v             /
+        +---------> event.ttl &lt;-------+
+                        |
+                   action.ttl
+                        |
+                    plot.ttl
+                        |
+               narn_instances.ttl (imports all)
+</pre>
+
+<h3>Namespace table</h3>
+<table>
+  <tr><th>Prefix</th><th>URI</th><th>File</th></tr>
+  <tr><td><code>fo:</code></td><td><code>http://purl.org/family/</code></td><td>familly_relation_fo.ttl (given)</td></tr>
+  <tr><td><code>meo:</code></td><td><code>http://purl.org/meo/</code></td><td>Middle_earth_ontolog_meo.ttl (given)</td></tr>
+  <tr><td><code>rcc:</code></td><td><code>https://purl.org/region/rcc8/</code></td><td>rcc.ttl (given)</td></tr>
+  <tr><td><code>npo:</code></td><td><code>http://purl.org/narn/place/</code></td><td>place.ttl</td></tr>
+  <tr><td><code>loc:</code></td><td><code>http://purl.org/narn/social/</code></td><td>social.ttl</td></tr>
+  <tr><td><code>nti:</code></td><td><code>http://purl.org/narn/time/</code></td><td>time.ttl</td></tr>
+  <tr><td><code>nev:</code></td><td><code>http://purl.org/narn/event/</code></td><td>event.ttl</td></tr>
+  <tr><td><code>nac:</code></td><td><code>http://purl.org/narn/action/</code></td><td>action.ttl</td></tr>
+  <tr><td><code>npl:</code></td><td><code>http://purl.org/narn/plot/</code></td><td>plot.ttl</td></tr>
+  <tr><td><code>narn:</code></td><td><code>http://purl.org/narn/</code></td><td>narn_instances.ttl</td></tr>
+</table>
+
+<!-- ─────────────────────────────── 2. PLACE ─────────────────────────────── -->
+<h2 id="place">2. Place Module <span class="module-tag">place.ttl</span></h2>
+<p>Imports <code>rcc:</code>. Defines a hierarchy of places and spatial relations.</p>
+
+<h3>Classes</h3>
+<table>
+  <tr><th>Term</th><th>Label</th><th>Description</th></tr>
+  <tr><td><code>npo:Place</code></td><td>place</td><td>A named location. Subclass of <code>rcc:Region</code>, so all RCC8 relations apply.</td></tr>
+  <tr><td><code>npo:Settlement</code></td><td>settlement</td><td>An inhabited place (city, village, stronghold). Disjoint with WildArea.</td></tr>
+  <tr><td><code>npo:WildArea</code></td><td>wild area</td><td>An uninhabited stretch of land. Disjoint with Settlement.</td></tr>
+  <tr><td><code>npo:Fortress</code></td><td>fortress</td><td>A fortified settlement built for military defence.</td></tr>
+  <tr><td><code>npo:City</code></td><td>city</td><td>A large organised settlement.</td></tr>
+  <tr><td><code>npo:Cavern</code></td><td>cavern</td><td>An underground place. If inside a settlement, inferred to be a settlement too.</td></tr>
+  <tr><td><code>npo:Forest</code></td><td>forest</td><td>Subclass of WildArea.</td></tr>
+  <tr><td><code>npo:Mountain</code></td><td>mountain</td><td>Subclass of WildArea.</td></tr>
+  <tr><td><code>npo:River</code></td><td>river</td><td>A flowing body of water, often a natural boundary.</td></tr>
+  <tr><td><code>npo:GeographicRegion</code></td><td>geographic region</td><td>A large area containing multiple places. Must contain at least one subpart.</td></tr>
+</table>
+
+<h3>Properties</h3>
+<table>
+  <tr><th>Term</th><th>Label</th><th>Characteristics</th><th>Description</th></tr>
+  <tr><td><code>npo:isSubpartOf</code></td><td>is subpart of</td><td>Transitive, Irreflexive; subPropertyOf <code>rcc:ntpp</code></td><td>X is entirely inside Y with no shared boundary.</td></tr>
+  <tr><td><code>npo:hasSubpart</code></td><td>has subpart</td><td>Transitive, Irreflexive; inverse of isSubpartOf</td><td>Y entirely contains X.</td></tr>
+  <tr><td><code>npo:borders</code></td><td>borders</td><td>Symmetric; subPropertyOf <code>rcc:ec</code></td><td>Two places share a boundary but do not overlap.</td></tr>
+  <tr><td><code>npo:isLocatedIn</code></td><td>is located in</td><td>Transitive</td><td>General containment, looser than isSubpartOf.</td></tr>
+  <tr><td><code>npo:isDisconnectedFrom</code></td><td>is disconnected from</td><td>Symmetric; subPropertyOf <code>rcc:dc</code></td><td>No common part, no touching. Used in the simultaneity axiom.</td></tr>
+  <tr><td><code>npo:hasCapital</code></td><td>has capital</td><td>—</td><td>Links a region to its principal settlement.</td></tr>
+</table>
+
+<div class="axiom-box">
+  <strong>Key axioms:</strong>
+  <ul>
+    <li><code>isSubpartOf</code> is <em>transitive</em> and <em>irreflexive</em> — no place is a subpart of itself.</li>
+    <li><code>Settlement</code> and <code>WildArea</code> are <em>disjoint</em>.</li>
+    <li>A <code>Cavern</code> that <code>isSubpartOf</code> some <code>Settlement</code> is inferred to be a <code>Settlement</code> (e.g., Menegroth).</li>
+    <li>A <code>GeographicRegion</code> must have at least one subpart (cardinality ≥ 1 on <code>hasSubpart</code>).</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────── 3. SOCIAL ─────────────────────────────── -->
+<h2 id="social">3. Social Relations Module <span class="module-tag">social.ttl</span></h2>
+<p>Imports <code>fo:</code> and <code>meo:</code>. Uses prefix <code>loc:</code> as required by the story description conventions. Complements the family ontology with non-familial social bonds.</p>
+
+<h3>Classes</h3>
+<table>
+  <tr><th>Term</th><th>Label</th><th>Description</th></tr>
+  <tr><td><code>loc:SocialGroup</code></td><td>social group</td><td>Collective of individuals united by purpose, identity, or bond.</td></tr>
+  <tr><td><code>loc:Kingdom</code></td><td>kingdom</td><td>Political entity. Members owe allegiance to its ruler.</td></tr>
+  <tr><td><code>loc:MilitaryUnit</code></td><td>military unit</td><td>Group organised for warfare or defence.</td></tr>
+  <tr><td><code>loc:Fellowship</code></td><td>fellowship</td><td>Voluntary company bound by friendship or shared goal.</td></tr>
+  <tr><td><code>loc:HouseOfMen</code></td><td>house of men</td><td>One of the great houses of the Edain.</td></tr>
+</table>
+
+<h3>Properties</h3>
+<table>
+  <tr><th>Term</th><th>Label</th><th>Characteristics</th><th>Description</th></tr>
+  <tr><td><code>loc:isAllyOf</code></td><td>is ally of</td><td>Symmetric</td><td>Two who support each other.</td></tr>
+  <tr><td><code>loc:isEnemyOf</code></td><td>is enemy of</td><td>Symmetric; disjoint with isAllyOf</td><td>Two who oppose each other.</td></tr>
+  <tr><td><code>loc:isLordOf</code></td><td>is lord of</td><td>Transitive</td><td>Feudal authority relation.</td></tr>
+  <tr><td><code>loc:isVassalOf</code></td><td>is vassal of</td><td>Inverse of isLordOf</td><td>Feudal subordination.</td></tr>
+  <tr><td><code>loc:isMentorOf</code></td><td>is mentor of</td><td>—</td><td>Teaching or guiding relationship.</td></tr>
+  <tr><td><code>loc:isProtégeOf</code></td><td>is protégé of</td><td>Inverse of isMentorOf</td><td>—</td></tr>
+  <tr><td><code>loc:isMemberOf</code></td><td>is member of</td><td>range: SocialGroup</td><td>Belongs to a social group.</td></tr>
+  <tr><td><code>loc:commands</code></td><td>commands</td><td>subPropertyOf isLordOf</td><td>Military command relation.</td></tr>
+  <tr><td><code>loc:isFriendOf</code></td><td>is friend of</td><td>Symmetric</td><td>Personal positive relationship.</td></tr>
+  <tr><td><code>loc:isBetrayedBy</code></td><td>is betrayed by</td><td>—</td><td>Trust broken.</td></tr>
+  <tr><td><code>loc:owesAllegianceTo</code></td><td>owes allegiance to</td><td>Chain: isMemberOf ∘ isLordOf</td><td>Derived from group membership + lordship.</td></tr>
+</table>
+
+<div class="axiom-box">
+  <strong>Key axioms:</strong>
+  <ul>
+    <li><code>isAllyOf</code> and <code>isEnemyOf</code> are <em>AllDisjointProperties</em> — no entity can be both ally and enemy of the same entity.</li>
+    <li><code>isLordOf</code> is transitive (if A is lord of B and B is lord of C, A is lord of C).</li>
+    <li><code>owesAllegianceTo</code> is derived via property chain <code>isMemberOf ∘ isLordOf</code>.</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────── 4. TIME ─────────────────────────────── -->
+<h2 id="time">4. Time Module <span class="module-tag">time.ttl</span></h2>
+<p>Standalone module implementing Allen's interval algebra with all 13 temporal relations.</p>
+
+<h3>Classes</h3>
+<table>
+  <tr><th>Term</th><th>Label</th><th>Description</th></tr>
+  <tr><td><code>nti:TemporalEntity</code></td><td>temporal entity</td><td>Superclass. Something with a temporal position.</td></tr>
+  <tr><td><code>nti:TimeInstant</code></td><td>time instant</td><td>A dimensionless point in time. Disjoint with TimeInterval.</td></tr>
+  <tr><td><code>nti:TimeInterval</code></td><td>time interval</td><td>A duration bounded by beginning and end instants. Must have exactly 1 hasBeginning and 1 hasEnd.</td></tr>
+  <tr><td><code>nti:Duration</code></td><td>duration</td><td>The length of an interval, independent of position.</td></tr>
+</table>
+
+<h3>Allen's 13 Relations</h3>
+<table>
+  <tr><th>Relation</th><th>Inverse</th><th>Description</th></tr>
+  <tr><td><code>nti:before</code></td><td><code>nti:after</code></td><td>A ends before B begins</td></tr>
+  <tr><td><code>nti:meets</code></td><td><code>nti:metBy</code></td><td>A ends exactly where B begins</td></tr>
+  <tr><td><code>nti:overlaps</code></td><td><code>nti:overlappedBy</code></td><td>A starts before B and ends inside B</td></tr>
+  <tr><td><code>nti:during</code></td><td><code>nti:contains</code></td><td>A is entirely within B</td></tr>
+  <tr><td><code>nti:starts</code></td><td><code>nti:startedBy</code></td><td>A and B begin together; A ends first</td></tr>
+  <tr><td><code>nti:finishes</code></td><td><code>nti:finishedBy</code></td><td>A and B end together; B starts first</td></tr>
+  <tr><td><code>nti:equals</code></td><td>self (symmetric)</td><td>Identical extent</td></tr>
+</table>
+
+<div class="axiom-box">
+  <strong>Key axioms:</strong>
+  <ul>
+    <li>All 13 Allen relations are pairwise disjoint (<code>owl:AllDisjointProperties</code>) — two intervals can satisfy only one.</li>
+    <li><code>before</code> and <code>after</code> are <em>irreflexive</em> and <em>transitive</em>.</li>
+    <li><code>equals</code> is <em>symmetric</em> and <em>transitive</em>.</li>
+    <li>All relations are sub-properties of <code>nti:hasTemporalRelation</code>, allowing generic temporal queries.</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────── 5. EVENT ─────────────────────────────── -->
+<h2 id="event">5. Event Module <span class="module-tag">event.ttl</span></h2>
+<p>Imports <code>npo:</code>, <code>nti:</code>, <code>meo:</code>, <code>loc:</code>. Central module linking characters, places, and time.</p>
+
+<h3>Event Hierarchy</h3>
+<table>
+  <tr><th>Term</th><th>Description</th></tr>
+  <tr><td><code>nev:Event</code></td><td>Root class. Must occur at ≥1 place.</td></tr>
+  <tr><td><code>nev:Battle</code></td><td>Armed confrontation. Must involve ≥1 EvilBeing.</td></tr>
+  <tr><td><code>nev:War</code></td><td>Prolonged conflict containing ≥1 Battle.</td></tr>
+  <tr><td><code>nev:Journey</code></td><td>Travel event. Has exactly 1 departure and 1 arrival place.</td></tr>
+  <tr><td><code>nev:Meeting</code></td><td>Encounter between ≥2 characters at one location.</td></tr>
+  <tr><td><code>nev:Birth</code></td><td>Coming into existence. Exactly 1 subject.</td></tr>
+  <tr><td><code>nev:Death</code></td><td>Ceasing to exist. Exactly 1 subject.</td></tr>
+  <tr><td><code>nev:Exile</code></td><td>Expulsion or departure from home.</td></tr>
+  <tr><td><code>nev:Betrayal</code></td><td>Trust broken between characters.</td></tr>
+  <tr><td><code>nev:Curse</code></td><td>Supernatural doom laid on a character.</td></tr>
+  <tr><td><code>nev:Capture</code></td><td>Character taken prisoner.</td></tr>
+  <tr><td><code>nev:Rescue</code></td><td>Character freed from captivity.</td></tr>
+</table>
+
+<h3>Key Properties</h3>
+<table>
+  <tr><th>Term</th><th>Domain → Range</th><th>Description</th></tr>
+  <tr><td><code>nev:occursAt</code></td><td>Event → Place</td><td>Where the event happens.</td></tr>
+  <tr><td><code>nev:involvesCharacter</code></td><td>Event → owl:Thing</td><td>Any participant.</td></tr>
+  <tr><td><code>nev:hasSubject</code></td><td>Event → owl:Thing</td><td>Primary character (subPropertyOf involvesCharacter).</td></tr>
+  <tr><td><code>nev:hasAgent</code></td><td>Event → owl:Thing</td><td>Character who triggers the event.</td></tr>
+  <tr><td><code>nev:hasTemporalExtent</code></td><td>Event → TimeInterval</td><td>When the event takes place.</td></tr>
+  <tr><td><code>nev:causedBy</code></td><td>Event → Event</td><td>Direct trigger.</td></tr>
+  <tr><td><code>nev:resultsIn</code></td><td>Event → Event</td><td>Inverse of causedBy.</td></tr>
+  <tr><td><code>nev:precedes</code></td><td>Event → Event</td><td>Transitive, Irreflexive; subPropertyOf nti:before.</td></tr>
+  <tr><td><code>nev:hasItem</code></td><td>Event → owl:Thing</td><td>Object involved in the event.</td></tr>
+</table>
+
+<div class="axiom-box">
+  <strong>Key axioms:</strong>
+  <ul>
+    <li>A <code>Battle</code> must involve at least one <code>meo:EvilBeing</code> (restriction on involvesCharacter).</li>
+    <li><code>Birth</code> and <code>Death</code> each have exactly 1 subject (cardinality constraint).</li>
+    <li>A <code>War</code> must have at least one <code>Battle</code> as a part.</li>
+    <li><strong>Simultaneity axiom:</strong> events occurring at disconnected places cannot share a character at the same time — enforced by a nested restriction using <code>npo:isDisconnectedFrom</code>.</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────── 6. ACTION ─────────────────────────────── -->
+<h2 id="action">6. Action Module <span class="module-tag">action.ttl</span></h2>
+<p>Imports <code>nev:</code>. Actions are specialised events performed by an agent with possible intent.</p>
+
+<h3>Action Hierarchy</h3>
+<table>
+  <tr><th>Term</th><th>Description</th></tr>
+  <tr><td><code>nac:Action</code></td><td>Subclass of Event. Must have ≥1 agent.</td></tr>
+  <tr><td><code>nac:IntentionalAction</code></td><td>Performed deliberately. Must have ≥1 purpose. Disjoint with Unintentional.</td></tr>
+  <tr><td><code>nac:UnintentionalAction</code></td><td>Accident, reflex, or compulsion. Disjoint with Intentional.</td></tr>
+  <tr><td><code>nac:PhysicalAction</code></td><td>Involves bodily movement or force.</td></tr>
+  <tr><td><code>nac:ViolentAction</code></td><td>Subclass of Physical. Must have ≥1 patient.</td></tr>
+  <tr><td><code>nac:SpeechAct</code></td><td>Performed through language.</td></tr>
+  <tr><td><code>nac:CoerciveAction</code></td><td>Forces another agent to behave in a certain way.</td></tr>
+  <tr><td><code>nac:MentalAction</code></td><td>Deciding, remembering, forgetting.</td></tr>
+</table>
+
+<h3>Items</h3>
+<table>
+  <tr><th>Term</th><th>Description</th></tr>
+  <tr><td><code>nac:Item</code></td><td>Physical object usable as instrument.</td></tr>
+  <tr><td><code>nac:Weapon</code></td><td>Item for combat (e.g., Gurthang).</td></tr>
+  <tr><td><code>nac:Artefact</code></td><td>Crafted object with story significance.</td></tr>
+</table>
+
+<h3>Key Properties</h3>
+<table>
+  <tr><th>Term</th><th>Description</th></tr>
+  <tr><td><code>nac:hasAgent</code></td><td>Who performs the action (subPropertyOf involvesCharacter).</td></tr>
+  <tr><td><code>nac:hasPatient</code></td><td>Who receives the action.</td></tr>
+  <tr><td><code>nac:hasPurpose</code></td><td>Goal or intention (domain: IntentionalAction).</td></tr>
+  <tr><td><code>nac:hasInstrument</code></td><td>Item used — answers "what item was used in event E?"</td></tr>
+  <tr><td><code>nac:hasResult</code></td><td>Outcome event or state.</td></tr>
+</table>
+
+<div class="axiom-box">
+  <strong>Key axioms:</strong>
+  <ul>
+    <li><code>IntentionalAction ∩ ViolentAction ⊆ CoerciveAction</code> (intersection subclass).</li>
+    <li>A <code>SpeechAct ∩ IntentionalAction</code> that hasResult some Event is a CoerciveAction (e.g., Morgoth's curse).</li>
+    <li>Property chain on <code>hasResult</code>.</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────── 7. PLOT ─────────────────────────────── -->
+<h2 id="plot">7. Plot Structure Module <span class="module-tag">plot.ttl</span></h2>
+<p>Imports <code>nev:</code> and <code>nac:</code>. Models the Freytag pyramid and narrative structure from outside the fictional world.</p>
+
+<h3>Classes (Freytag pyramid)</h3>
+<table>
+  <tr><th>Term</th><th>Description</th></tr>
+  <tr><td><code>npl:Story</code></td><td>A complete narrative. Must have exactly 1 Climax and ≥1 PlotArc.</td></tr>
+  <tr><td><code>npl:Chapter</code></td><td>Named subdivision of a story.</td></tr>
+  <tr><td><code>npl:PlotArc</code></td><td>Thematic narrative trajectory.</td></tr>
+  <tr><td><code>npl:PlotPoint</code></td><td>A narrative turning point.</td></tr>
+  <tr><td><code>npl:Exposition</code></td><td>Opening. Precedes RisingAction.</td></tr>
+  <tr><td><code>npl:RisingAction</code></td><td>Builds tension. Precedes Climax.</td></tr>
+  <tr><td><code>npl:Climax</code></td><td>Peak tension. Precedes FallingAction. Unique per story.</td></tr>
+  <tr><td><code>npl:FallingAction</code></td><td>After climax. Precedes Resolution.</td></tr>
+  <tr><td><code>npl:Resolution</code></td><td>Conclusion. Follows Climax (transitively).</td></tr>
+  <tr><td><code>npl:Subplot</code></td><td>Secondary arc. isSubplotOf some Story.</td></tr>
+  <tr><td><code>npl:Tragedy</code></td><td>Story in which the protagonist dies. HasProtagonist some (subject of some Death).</td></tr>
+</table>
+
+<div class="axiom-box">
+  <strong>Key axioms:</strong>
+  <ul>
+    <li>Every <code>Story</code> has <em>exactly 1</em> <code>Climax</code> (cardinality 1 on <code>hasClimax</code>).</li>
+    <li>Freytag ordering enforced: <code>Exposition precedes RisingAction precedes Climax precedes FallingAction precedes Resolution</code>.</li>
+    <li>The five narrative stages are pairwise disjoint (<code>AllDisjointClasses</code>).</li>
+    <li>A <code>Tragedy</code> must have a protagonist who is the subject of some <code>Death</code> event.</li>
+  </ul>
+</div>
+
+<!-- ─────────────────────────────── 8. INSTANCES ─────────────────────────────── -->
+<h2 id="instances">8. Narn Instances <span class="module-tag">narn_instances.ttl</span></h2>
+<p>Imports all modules. Provides concrete individuals illustrating every class and property.</p>
+
+<h3>Characters</h3>
+<table>
+  <tr><th>Instance</th><th>Types</th><th>Notes</th></tr>
+  <tr><td><code>narn:hurin</code></td><td>meo:Adan, fo:Male</td><td>Lord of Dor-lómin, captured by Morgoth</td></tr>
+  <tr><td><code>narn:morwen</code></td><td>meo:Adan, fo:Female</td><td>Wife of Húrin</td></tr>
+  <tr><td><code>narn:turin</code></td><td>meo:Adan, fo:Male</td><td>Protagonist; son of Húrin</td></tr>
+  <tr><td><code>narn:nienor</code></td><td>meo:Adan, fo:Female</td><td>Sister of Túrin; cursed by Glaurung</td></tr>
+  <tr><td><code>narn:beleg</code></td><td>meo:Elda, fo:Male</td><td>Elven archer; mentor of Túrin</td></tr>
+  <tr><td><code>narn:finduilas</code></td><td>meo:Elda, fo:Female</td><td>Elven princess of Nargothrond</td></tr>
+  <tr><td><code>narn:glaurung</code></td><td>meo:Lócë</td><td>The dragon; servant of Morgoth</td></tr>
+  <tr><td><code>narn:melian</code></td><td>meo:Maia, fo:Female</td><td>Queen of Doriath</td></tr>
+  <tr><td><code>narn:thingol</code></td><td>meo:Elda, fo:Male</td><td>King of Doriath</td></tr>
+  <tr><td><code>narn:brandir</code></td><td>meo:Adan, fo:Male</td><td>Chieftain of Brethil</td></tr>
+</table>
+
+<h3>Key Events (temporal sequence)</h3>
+<ol>
+  <li><code>narn:nirnaeth</code> — Battle of Unnumbered Tears (Year 472)</li>
+  <li><code>narn:hurinCapture</code> — Húrin taken to Angband</li>
+  <li><code>narn:morgothCurse</code> — Doom laid on Húrin's children</li>
+  <li><code>narn:turinExile</code> — Túrin flees Doriath</li>
+  <li><code>narn:belegDeath</code> — Túrin accidentally kills Beleg</li>
+  <li><code>narn:fallOfNargothrond</code> — Glaurung destroys Nargothrond (<strong>Climax</strong>)</li>
+  <li><code>narn:glaurungCurse</code> — Nienor cursed with amnesia</li>
+  <li><code>narn:turinKillsGlaurung</code> — Túrin slays the dragon</li>
+  <li><code>narn:nienorDeath</code> — Nienor throws herself in the river</li>
+  <li><code>narn:turinDeath</code> — Túrin commands Gurthang to slay him (<strong>Resolution</strong>)</li>
+</ol>
+
+<!-- ─────────────────────────────── 9. COMPETENCY QUESTIONS ─────────────────────────────── -->
+<h2 id="cq">9. Competency Questions</h2>
+
+<div class="cq">
+  <strong>Q: Who is parent of Túrin?</strong><br>
+  Query: <code>?x fo:isAParentOf narn:turin</code><br>
+  Answer: <code>narn:hurin</code>, <code>narn:morwen</code>
+</div>
+
+<div class="cq">
+  <strong>Q: Who is married to Húrin?</strong><br>
+  Query: <code>narn:hurin fo:isMarriedTo ?x</code><br>
+  Answer: <code>narn:morwen</code>
+</div>
+
+<div class="cq">
+  <strong>Q: Where did Túrin go during the story?</strong><br>
+  Query: <code>?e nev:involvesCharacter narn:turin . ?e nev:occursAt ?place</code><br>
+  Answer: Menegroth (Doriath), Dimbar, Nargothrond, Brethil
+</div>
+
+<div class="cq">
+  <strong>Q: Who was involved in the Fall of Nargothrond?</strong><br>
+  Query: <code>narn:fallOfNargothrond nev:involvesCharacter ?x</code><br>
+  Answer: Túrin, Glaurung, Finduilas, Morgoth
+</div>
+
+<div class="cq">
+  <strong>Q: Did the Nirnaeth happen before the Fall of Nargothrond?</strong><br>
+  Query: <code>narn:nirnaeth nev:precedes narn:fallOfNargothrond</code><br>
+  Answer: Yes (transitively via intermediate events)
+</div>
+
+<div class="cq">
+  <strong>Q: Where did the Fall of Nargothrond occur?</strong><br>
+  Query: <code>narn:fallOfNargothrond nev:occursAt ?place</code><br>
+  Answer: <code>narn:nargothrond</code>
+</div>
+
+<div class="cq">
+  <strong>Q: Is it possible to be in Angband and Nargothrond at the same time?</strong><br>
+  Answer: No — <code>narn:angband npo:isDisconnectedFrom narn:nargothrond</code> and the simultaneity axiom in event.ttl rules this out.
+</div>
+
+<div class="cq">
+  <strong>Q: What event ends the Narn?</strong><br>
+  Query: <code>narn:narnStory npl:endsWithEvent ?e</code><br>
+  Answer: <code>narn:turinDeath</code>
+</div>
+
+<div class="cq">
+  <strong>Q: What item was used in Túrin's suicide?</strong><br>
+  Query: <code>narn:turinSuicide nac:hasInstrument ?item</code><br>
+  Answer: <code>narn:gurthang</code> (Gurthang, the black sword)
+</div>
+
+<!-- ─────────────────────────────── 10. DESIGN ─────────────────────────────── -->
+<h2 id="design">10. Design Choices</h2>
+
+<h3>Why separate modules?</h3>
+<p>Separation of concerns makes each module independently reusable. The place module can be reused for any story; the time module for any temporal ontology; the social module for any feudal world. Imports are strictly acyclic.</p>
+
+<h3>Why Allen's algebra rather than W3C Time Ontology?</h3>
+<p>Allen's 13 relations are <em>exhaustive and mutually exclusive</em> for intervals, which allows the <code>AllDisjointProperties</code> axiom to enforce consistency. W3C OWL-Time is richer but more complex; Allen's algebra is sufficient to answer all competency questions about event ordering.</p>
+
+<h3>Why is Action a subclass of Event?</h3>
+<p>Events are the most general class of things that happen. Actions are events with an agent and optional intent. This design follows the BBC Event Ontology pattern and avoids duplication of temporal and spatial properties.</p>
+
+<h3>Why is Menegroth both a Cavern and a Settlement?</h3>
+<p>Menegroth is explicitly an underground city. The axiom in place.ttl infers this: a Cavern that is a subpart of a Settlement is itself a Settlement. This demonstrates OWL's open-world assumption and inference power.</p>
+
+<h3>Tragedy and the Fatal Flaw</h3>
+<p>The Narn is one of the great literary tragedies. Modelling <code>npl:Tragedy</code> as a subclass of <code>npl:Story</code> with its own properties (<code>hasFatalFlaw</code>) and axiom (protagonist must die) captures the genre-level knowledge.</p>
+
+<!-- ─────────────────────────────── 11. AI USAGE ─────────────────────────────── -->
+<h2 id="ai">11. AI Tool Usage</h2>
+
+<p>An AI assistant (large language model) was used as a proxy expert in several stages of this project:</p>
+
+<h3>Plot structure (npl:)</h3>
+<p>The assistant was consulted about the standard Freytag five-act dramatic structure and how it maps onto the Narn. It confirmed that the Fall of Nargothrond is the correct climax and that Túrin's death is the resolution.</p>
+
+<h3>Action ontology (nac:)</h3>
+<p>The assistant was asked about the ontological distinction between events and actions (citing Davidson's action theory). It suggested the agent/patient/purpose/instrument/result property structure, noting that intentional actions require a purpose while unintentional ones do not. The distinction between <em>physical</em>, <em>speech</em>, and <em>mental</em> actions was also suggested by the assistant based on philosophy of action literature.</p>
+
+<h3>OWL axiom design</h3>
+<p>The assistant suggested using <code>owl:AllDisjointProperties</code> for the Allen relations (ensuring mutual exclusivity) and the property chain <code>isMemberOf ∘ isLordOf</code> for deriving allegiance. The simultaneity impossibility axiom was designed with the assistant's guidance, using nested OWL restrictions over <code>npo:isDisconnectedFrom</code>.</p>
+
+<hr>
+<p><small>Last modified: 2026-04-03. Ontology files in Turtle format; this documentation in HTML.</small></p>
+
+</body>
+</html>
