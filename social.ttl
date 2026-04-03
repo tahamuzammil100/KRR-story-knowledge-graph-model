@@ -1,0 +1,154 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix fo:   <http://purl.org/family/> .
+@prefix loc:  <http://purl.org/narn/social/> .
+@prefix meo:  <http://purl.org/meo/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+loc: a owl:Ontology ;
+    owl:imports fo: ;
+    owl:imports meo: ;
+    rdfs:label "Social relations ontology"@en ;
+    rdfs:comment "An ontology module for social relationships between characters in story plots. Complements the family ontology (fo:) with non-familial social bonds."@en ;
+    dct:title "Social Relations Ontology"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime ;
+    dct:description "Models social structures such as allegiances, enmities, feudal hierarchies, mentorships, and group memberships. Uses the prefix loc: as required by the story description conventions."@en .
+
+#
+# Classes
+#
+loc:SocialGroup a owl:Class ;
+    rdfs:label "social group"@en ;
+    rdfs:comment "A collective of individuals united by a common purpose, identity, or bond."@en .
+
+loc:Kingdom a owl:Class ;
+    rdfs:subClassOf loc:SocialGroup ;
+    rdfs:label "kingdom"@en ;
+    rdfs:comment "A political entity ruled by a king or queen. Members of a kingdom owe allegiance to its ruler."@en .
+
+loc:MilitaryUnit a owl:Class ;
+    rdfs:subClassOf loc:SocialGroup ;
+    rdfs:label "military unit"@en ;
+    rdfs:comment "A group of individuals organised for warfare or defence."@en .
+
+loc:Fellowship a owl:Class ;
+    rdfs:subClassOf loc:SocialGroup ;
+    rdfs:label "fellowship"@en ;
+    rdfs:comment "A voluntary company of individuals bound by friendship, shared goal, or oath."@en .
+
+loc:HouseOfMen a owl:Class ;
+    rdfs:subClassOf loc:SocialGroup ;
+    rdfs:label "house of men"@en ;
+    rdfs:comment "One of the great houses of the Edain, a clan-level social unit among Men."@en .
+
+#
+# Object properties
+#
+loc:isAllyOf a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:label "is ally of"@en ;
+    rdfs:comment "Two individuals or groups who support each other. Symmetric: if A is ally of B then B is ally of A."@en .
+
+loc:isEnemyOf a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:label "is enemy of"@en ;
+    rdfs:comment "Two individuals or groups who are in opposition. Symmetric and disjoint with isAllyOf."@en .
+
+loc:isLordOf a owl:ObjectProperty ;
+    rdfs:label "is lord of"@en ;
+    rdfs:comment "A feudal relation: the subject has authority over the object."@en .
+
+loc:isVassalOf a owl:ObjectProperty ;
+    owl:inverseOf loc:isLordOf ;
+    rdfs:label "is vassal of"@en ;
+    rdfs:comment "The inverse of isLordOf. If A is lord of B, then B is vassal of A."@en .
+
+loc:isMentorOf a owl:ObjectProperty ;
+    rdfs:label "is mentor of"@en ;
+    rdfs:comment "A teaching or guiding relationship: the subject guides, teaches, or advises the object."@en .
+
+loc:isProtégeOf a owl:ObjectProperty ;
+    owl:inverseOf loc:isMentorOf ;
+    rdfs:label "is protégé of"@en ;
+    rdfs:comment "The inverse of isMentorOf. If A is mentor of B, then B is protégé of A."@en .
+
+loc:isMemberOf a owl:ObjectProperty ;
+    rdfs:label "is member of"@en ;
+    rdfs:domain owl:Thing ;
+    rdfs:range loc:SocialGroup ;
+    rdfs:comment "An individual belongs to a social group."@en .
+
+loc:hasMember a owl:ObjectProperty ;
+    owl:inverseOf loc:isMemberOf ;
+    rdfs:label "has member"@en ;
+    rdfs:domain loc:SocialGroup ;
+    rdfs:comment "A social group includes the given individual."@en .
+
+loc:commands a owl:ObjectProperty ;
+    rdfs:subPropertyOf loc:isLordOf ;
+    rdfs:label "commands"@en ;
+    rdfs:comment "A military command relation. A commander commands a unit or soldier. Sub-property of isLordOf."@en .
+
+loc:isFriendOf a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:label "is friend of"@en ;
+    rdfs:comment "A positive personal relationship. Symmetric: if A is friend of B then B is friend of A."@en .
+
+loc:isBetrayedBy a owl:ObjectProperty ;
+    rdfs:label "is betrayed by"@en ;
+    rdfs:comment "Expresses an act of betrayal: the subject was betrayed by the object."@en .
+
+loc:betrays a owl:ObjectProperty ;
+    owl:inverseOf loc:isBetrayedBy ;
+    rdfs:label "betrays"@en ;
+    rdfs:comment "Inverse of isBetrayedBy."@en .
+
+loc:owesAllegianceTo a owl:ObjectProperty ;
+    rdfs:label "owes allegiance to"@en ;
+    rdfs:comment "A character pledges loyalty to another character or to a lord."@en .
+
+#
+# Axioms
+#
+
+# isAllyOf and isEnemyOf are disjoint — one cannot be both ally and enemy of the same entity
+[
+    a owl:AllDisjointProperties ;
+    owl:members ( loc:isAllyOf loc:isEnemyOf )
+] .
+
+# Whoever serves Morgoth (meo:morgoth) is their enemy
+[
+    a owl:Restriction ;
+    owl:onProperty loc:isVassalOf ;
+    owl:hasValue meo:morgoth
+] rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty loc:isEnemyOf ;
+    owl:hasValue meo:eru
+] .
+
+# If A is lord of B and B is lord of C, then A is lord of C (transitivity through chain)
+loc:isLordOf a owl:TransitiveProperty .
+
+# A member of a kingdom owes allegiance to the kingdom's ruler
+# (expressed as a SWRL-like chain: isMemberOf o hasMember leads to shared allegiance context)
+# Approximated in OWL with subPropertyChain:
+loc:owesAllegianceTo owl:propertyChainAxiom ( loc:isMemberOf loc:isLordOf ) .
+
+# The lord of a kingdom is a member of that kingdom
+[
+    a owl:Restriction ;
+    owl:onProperty loc:isLordOf ;
+    owl:someValuesFrom loc:Kingdom
+] rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty loc:isMemberOf ;
+    owl:someValuesFrom loc:Kingdom
+] .
