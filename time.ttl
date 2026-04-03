@@ -1,0 +1,209 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix nti:  <http://purl.org/narn/time/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+nti: a owl:Ontology ;
+    rdfs:label "Time ontology"@en ;
+    rdfs:comment "An ontology module for temporal concepts and Allen's interval algebra, used to order events in story plots."@en ;
+    dct:title "Time Ontology"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime ;
+    dct:description "Provides TimeInterval and TimeInstant classes together with all 13 Allen interval relations. Relations are declared with their inverses and symmetry properties so that a reasoner can derive implicit temporal orderings."@en .
+
+#
+# Classes
+#
+nti:TemporalEntity a owl:Class ;
+    rdfs:label "temporal entity"@en ;
+    rdfs:comment "Something that has a position in time, either as a point or as an interval."@en .
+
+nti:TimeInstant a owl:Class ;
+    rdfs:subClassOf nti:TemporalEntity ;
+    owl:disjointWith nti:TimeInterval ;
+    rdfs:label "time instant"@en ;
+    rdfs:comment "A dimensionless point in time (a moment)."@en .
+
+nti:TimeInterval a owl:Class ;
+    rdfs:subClassOf nti:TemporalEntity ;
+    owl:disjointWith nti:TimeInstant ;
+    rdfs:label "time interval"@en ;
+    rdfs:comment "A duration of time bounded by a beginning instant and an ending instant."@en .
+
+nti:Duration a owl:Class ;
+    rdfs:label "duration"@en ;
+    rdfs:comment "The length of a time interval, independent of its position in time."@en .
+
+#
+# Datatype properties
+#
+nti:hasBeginning a owl:DatatypeProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range xsd:integer ;
+    rdfs:label "has beginning"@en ;
+    rdfs:comment "The start point of a time interval, expressed as a year (integer) in the story's timeline."@en .
+
+nti:hasEnd a owl:DatatypeProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range xsd:integer ;
+    rdfs:label "has end"@en ;
+    rdfs:comment "The end point of a time interval."@en .
+
+#
+# Object properties — Allen's 13 interval relations
+# Each relation is declared with its inverse.
+# Source: Allen (1983) "Maintaining knowledge about temporal intervals"
+#
+
+nti:before a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain nti:TemporalEntity ;
+    rdfs:range nti:TemporalEntity ;
+    owl:inverseOf nti:after ;
+    rdfs:label "before"@en ;
+    rdfs:comment "Interval A ends before interval B begins. The most basic ordering relation. Transitive."@en .
+
+nti:after a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain nti:TemporalEntity ;
+    rdfs:range nti:TemporalEntity ;
+    owl:inverseOf nti:before ;
+    rdfs:label "after"@en ;
+    rdfs:comment "Inverse of before: B is before A."@en .
+
+nti:meets a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:metBy ;
+    rdfs:label "meets"@en ;
+    rdfs:comment "Interval A ends exactly where interval B begins (no gap, no overlap)."@en .
+
+nti:metBy a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:meets ;
+    rdfs:label "met by"@en ;
+    rdfs:comment "Inverse of meets."@en .
+
+nti:overlaps a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:overlappedBy ;
+    rdfs:subPropertyOf nti:before ;
+    rdfs:label "overlaps"@en ;
+    rdfs:comment "Interval A starts before B and ends during B (partial temporal overlap)."@en .
+
+nti:overlappedBy a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:overlaps ;
+    rdfs:label "overlapped by"@en ;
+    rdfs:comment "Inverse of overlaps."@en .
+
+nti:during a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:contains ;
+    rdfs:label "during"@en ;
+    rdfs:comment "Interval A is entirely within interval B (A starts after B and ends before B)."@en .
+
+nti:contains a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:during ;
+    rdfs:label "contains"@en ;
+    rdfs:comment "Interval A entirely encompasses interval B. Inverse of during."@en .
+
+nti:starts a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:startedBy ;
+    rdfs:label "starts"@en ;
+    rdfs:comment "Intervals A and B begin at the same instant, but A ends before B."@en .
+
+nti:startedBy a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:starts ;
+    rdfs:label "started by"@en ;
+    rdfs:comment "Inverse of starts."@en .
+
+nti:finishes a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:finishedBy ;
+    rdfs:label "finishes"@en ;
+    rdfs:comment "Intervals A and B end at the same instant, but A starts after B."@en .
+
+nti:finishedBy a owl:ObjectProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    owl:inverseOf nti:finishes ;
+    rdfs:label "finished by"@en ;
+    rdfs:comment "Inverse of finishes."@en .
+
+nti:equals a owl:ObjectProperty, owl:SymmetricProperty, owl:TransitiveProperty ;
+    rdfs:domain nti:TimeInterval ;
+    rdfs:range nti:TimeInterval ;
+    rdfs:label "equals"@en ;
+    rdfs:comment "Intervals A and B have the same beginning and the same end. Symmetric and transitive."@en .
+
+nti:hasTemporalRelation a owl:ObjectProperty ;
+    rdfs:domain nti:TemporalEntity ;
+    rdfs:range nti:TemporalEntity ;
+    rdfs:label "has temporal relation"@en ;
+    rdfs:comment "Super-property of all Allen relations. Allows querying any temporal relationship without specifying which one."@en .
+
+# All Allen relations are sub-properties of hasTemporalRelation
+nti:before    rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:after     rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:meets     rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:metBy     rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:overlaps  rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:overlappedBy rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:during    rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:contains  rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:starts    rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:startedBy rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:finishes  rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:finishedBy rdfs:subPropertyOf nti:hasTemporalRelation .
+nti:equals    rdfs:subPropertyOf nti:hasTemporalRelation .
+
+#
+# Axioms
+#
+
+# A time interval must have a beginning before its end
+# (encoded as an OWL restriction on hasBeginning and hasEnd)
+nti:TimeInterval rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nti:hasBeginning ;
+    owl:cardinality 1
+] .
+
+nti:TimeInterval rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nti:hasEnd ;
+    owl:cardinality 1
+] .
+
+# The 13 Allen relations are pairwise disjoint (two intervals can satisfy only one)
+# (declared as AllDisjointProperties)
+[
+    a owl:AllDisjointProperties ;
+    owl:members (
+        nti:before nti:meets nti:overlaps nti:during
+        nti:starts nti:finishes nti:equals
+        nti:after nti:metBy nti:overlappedBy nti:contains
+        nti:startedBy nti:finishedBy
+    )
+] .
+
+# before is irreflexive (nothing is before itself)
+nti:before a owl:IrreflexiveProperty .
+nti:after  a owl:IrreflexiveProperty .
