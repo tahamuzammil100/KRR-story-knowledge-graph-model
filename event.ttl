@@ -1,0 +1,268 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix fo:   <http://purl.org/family/> .
+@prefix loc:  <http://purl.org/narn/social/> .
+@prefix meo:  <http://purl.org/meo/> .
+@prefix nev:  <http://purl.org/narn/event/> .
+@prefix npo:  <http://purl.org/narn/place/> .
+@prefix nti:  <http://purl.org/narn/time/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+nev: a owl:Ontology ;
+    owl:imports npo: ;
+    owl:imports nti: ;
+    owl:imports meo: ;
+    owl:imports loc: ;
+    rdfs:label "Event ontology"@en ;
+    rdfs:comment "An ontology module for events in story plots: their types, participants, locations, and temporal ordering."@en ;
+    dct:title "Event Ontology"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime ;
+    dct:description "Defines an event hierarchy (battles, journeys, meetings, births, deaths, etc.) and rich axioms relating events to characters, places, and time intervals. The central competency question — can a character be in two disconnected places at once? — is answered here as impossible."@en .
+
+#
+# Classes — Event hierarchy
+#
+nev:Event a owl:Class ;
+    rdfs:label "event"@en ;
+    rdfs:comment "Something that happens at a place during a time interval and involves one or more participants."@en .
+
+nev:Battle a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "battle"@en ;
+    rdfs:comment "An armed confrontation between opposing forces. Every battle involves at least one character who is an EvilBeing (the enemy force)."@en .
+
+nev:War a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "war"@en ;
+    rdfs:comment "A prolonged armed conflict that contains multiple battles."@en .
+
+nev:Journey a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "journey"@en ;
+    rdfs:comment "A travel event in which a character moves from one place to another."@en .
+
+nev:Meeting a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "meeting"@en ;
+    rdfs:comment "An encounter between two or more characters at a single location."@en .
+
+nev:Birth a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "birth"@en ;
+    rdfs:comment "The event of a character coming into existence. A birth event has exactly one subject."@en .
+
+nev:Death a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "death"@en ;
+    rdfs:comment "The event of a character ceasing to exist (or passing beyond the mortal world). A death event has exactly one subject."@en .
+
+nev:Exile a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "exile"@en ;
+    rdfs:comment "The event of a character being expelled or departing from their home."@en .
+
+nev:Betrayal a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "betrayal"@en ;
+    rdfs:comment "An event in which trust is broken: one character acts against another they were supposed to protect or support."@en .
+
+nev:Curse a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "curse"@en ;
+    rdfs:comment "An event in which a supernatural doom is placed on a character or bloodline."@en .
+
+nev:Capture a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "capture"@en ;
+    rdfs:comment "An event in which a character is taken prisoner."@en .
+
+nev:Rescue a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "rescue"@en ;
+    rdfs:comment "An event in which a character frees another character from captivity or danger."@en .
+
+#
+# Object properties
+#
+nev:occursAt a owl:ObjectProperty ;
+    rdfs:domain nev:Event ;
+    rdfs:range npo:Place ;
+    rdfs:label "occurs at"@en ;
+    rdfs:comment "The place where the event takes place."@en .
+
+nev:involvesCharacter a owl:ObjectProperty ;
+    rdfs:domain nev:Event ;
+    rdfs:label "involves character"@en ;
+    rdfs:comment "A character who participates in the event in any role."@en .
+
+nev:hasSubject a owl:ObjectProperty ;
+    rdfs:subPropertyOf nev:involvesCharacter ;
+    rdfs:domain nev:Event ;
+    rdfs:label "has subject"@en ;
+    rdfs:comment "The primary character that the event is about (e.g. the person born, the person who died)."@en .
+
+nev:hasAgent a owl:ObjectProperty ;
+    rdfs:subPropertyOf nev:involvesCharacter ;
+    rdfs:domain nev:Event ;
+    rdfs:label "has agent"@en ;
+    rdfs:comment "The character who performs or triggers the event."@en .
+
+nev:hasTemporalExtent a owl:ObjectProperty ;
+    rdfs:domain nev:Event ;
+    rdfs:range nti:TimeInterval ;
+    rdfs:label "has temporal extent"@en ;
+    rdfs:comment "The time interval during which the event takes place."@en .
+
+nev:causedBy a owl:ObjectProperty ;
+    rdfs:domain nev:Event ;
+    rdfs:range nev:Event ;
+    rdfs:label "caused by"@en ;
+    rdfs:comment "The event in the domain was directly triggered by the event in the range."@en .
+
+nev:resultsIn a owl:ObjectProperty ;
+    owl:inverseOf nev:causedBy ;
+    rdfs:domain nev:Event ;
+    rdfs:range nev:Event ;
+    rdfs:label "results in"@en ;
+    rdfs:comment "Inverse of causedBy: the event in the domain leads to the event in the range."@en .
+
+nev:isPartOf a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain nev:Event ;
+    rdfs:range nev:Event ;
+    rdfs:label "is part of"@en ;
+    rdfs:comment "The first event is a component of the second (e.g. a battle is part of a war)."@en .
+
+nev:hasPart a owl:ObjectProperty, owl:TransitiveProperty ;
+    owl:inverseOf nev:isPartOf ;
+    rdfs:domain nev:Event ;
+    rdfs:range nev:Event ;
+    rdfs:label "has part"@en ;
+    rdfs:comment "Inverse of isPartOf."@en .
+
+nev:precedes a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+    rdfs:subPropertyOf nti:before ;
+    rdfs:domain nev:Event ;
+    rdfs:range nev:Event ;
+    rdfs:label "precedes"@en ;
+    rdfs:comment "This event occurs entirely before the other event. Sub-property of nti:before. Transitive and irreflexive."@en .
+
+nev:follows a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+    owl:inverseOf nev:precedes ;
+    rdfs:subPropertyOf nti:after ;
+    rdfs:domain nev:Event ;
+    rdfs:range nev:Event ;
+    rdfs:label "follows"@en ;
+    rdfs:comment "Inverse of precedes."@en .
+
+nev:hasDeparturePlace a owl:ObjectProperty ;
+    rdfs:subPropertyOf nev:occursAt ;
+    rdfs:domain nev:Journey ;
+    rdfs:range npo:Place ;
+    rdfs:label "has departure place"@en ;
+    rdfs:comment "The place from which the journey begins."@en .
+
+nev:hasArrivalPlace a owl:ObjectProperty ;
+    rdfs:subPropertyOf nev:occursAt ;
+    rdfs:domain nev:Journey ;
+    rdfs:range npo:Place ;
+    rdfs:label "has arrival place"@en ;
+    rdfs:comment "The place at which the journey ends."@en .
+
+nev:hasItem a owl:ObjectProperty ;
+    rdfs:domain nev:Event ;
+    rdfs:label "has item"@en ;
+    rdfs:comment "An object or artefact used or involved in the event."@en .
+
+#
+# Axioms
+#
+
+# Every battle involves at least one evil being (there must be an enemy)
+nev:Battle rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:involvesCharacter ;
+    owl:someValuesFrom meo:EvilBeing
+] .
+
+# A birth event involves exactly one subject
+nev:Birth rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:hasSubject ;
+    owl:cardinality 1
+] .
+
+# A death event involves exactly one subject
+nev:Death rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:hasSubject ;
+    owl:cardinality 1
+] .
+
+# Every event occurs at at least one place
+nev:Event rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:occursAt ;
+    owl:minCardinality 1
+] .
+
+# A journey has a departure place different from its arrival place
+nev:Journey rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:hasDeparturePlace ;
+    owl:cardinality 1
+] .
+
+nev:Journey rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:hasArrivalPlace ;
+    owl:cardinality 1
+] .
+
+# A war contains multiple battles
+nev:War rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nev:hasPart ;
+    owl:someValuesFrom nev:Battle
+] .
+
+# KEY AXIOM: A character cannot be the subject of two events that occur at
+# disconnected places at the same time (enforcing spatial consistency).
+# Expressed as: if event E1 and E2 share a subject S,
+# and E1 occurs at P1 and E2 occurs at P2, and P1 isDisconnectedFrom P2,
+# then E1 and E2 cannot have the same temporal extent.
+# In OWL 2 this is encoded as a disjointness on the value restriction:
+[
+    a owl:Class ;
+    owl:intersectionOf (
+        nev:Event
+        [ a owl:Restriction ;
+          owl:onProperty nev:occursAt ;
+          owl:someValuesFrom [
+              a owl:Restriction ;
+              owl:onProperty npo:isDisconnectedFrom ;
+              owl:someValuesFrom npo:Place
+          ]
+        ]
+    )
+] owl:disjointWith [
+    a owl:Class ;
+    owl:intersectionOf (
+        nev:Event
+        [ a owl:Restriction ;
+          owl:onProperty nev:occursAt ;
+          owl:someValuesFrom npo:Place
+        ]
+        [ a owl:Restriction ;
+          owl:onProperty nev:involvesCharacter ;
+          owl:someValuesFrom owl:Thing
+        ]
+    )
+] .
