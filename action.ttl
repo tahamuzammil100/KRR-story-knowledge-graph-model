@@ -1,0 +1,164 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix nac:  <http://purl.org/narn/action/> .
+@prefix nev:  <http://purl.org/narn/event/> .
+@prefix npo:  <http://purl.org/narn/place/> .
+@prefix nti:  <http://purl.org/narn/time/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+nac: a owl:Ontology ;
+    owl:imports nev: ;
+    rdfs:label "Action ontology"@en ;
+    rdfs:comment "An ontology module for actions in story plots. Actions are a sub-type of events that are performed by an agent who may have an intention, a patient, an instrument, and an outcome."@en ;
+    dct:title "Action Ontology"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime ;
+    dct:description "Distinguishes intentional actions (done on purpose) from unintentional ones and further specialises into physical, verbal, coercive, and violent actions. Properties like hasAgent, hasPatient, hasPurpose, hasInstrument, and hasResult allow fine-grained descriptions of what a character does and why."@en .
+
+#
+# Classes
+#
+nac:Action a owl:Class ;
+    rdfs:subClassOf nev:Event ;
+    rdfs:label "action"@en ;
+    rdfs:comment "An event that is performed by an agent. Unlike bare events, actions imply an acting subject."@en .
+
+nac:IntentionalAction a owl:Class ;
+    rdfs:subClassOf nac:Action ;
+    owl:disjointWith nac:UnintentionalAction ;
+    rdfs:label "intentional action"@en ;
+    rdfs:comment "An action that the agent performs deliberately, with a goal or purpose in mind."@en .
+
+nac:UnintentionalAction a owl:Class ;
+    rdfs:subClassOf nac:Action ;
+    owl:disjointWith nac:IntentionalAction ;
+    rdfs:label "unintentional action"@en ;
+    rdfs:comment "An action performed without a deliberate goal — accident, reflex, or compulsion (e.g., Túrin's actions under Glaurung's curse)."@en .
+
+nac:PhysicalAction a owl:Class ;
+    rdfs:subClassOf nac:Action ;
+    rdfs:label "physical action"@en ;
+    rdfs:comment "An action that involves bodily movement or physical force."@en .
+
+nac:ViolentAction a owl:Class ;
+    rdfs:subClassOf nac:PhysicalAction ;
+    rdfs:label "violent action"@en ;
+    rdfs:comment "A physical action involving harmful force against a patient."@en .
+
+nac:SpeechAct a owl:Class ;
+    rdfs:subClassOf nac:Action ;
+    rdfs:label "speech act"@en ;
+    rdfs:comment "An action performed through language: a declaration, promise, command, curse, or plea."@en .
+
+nac:CoerciveAction a owl:Class ;
+    rdfs:subClassOf nac:IntentionalAction ;
+    rdfs:label "coercive action"@en ;
+    rdfs:comment "An intentional action that forces or compels another agent to behave in a certain way."@en .
+
+nac:MentalAction a owl:Class ;
+    rdfs:subClassOf nac:Action ;
+    rdfs:label "mental action"@en ;
+    rdfs:comment "An action that takes place in the mind, such as deciding, remembering, or forgetting."@en .
+
+nac:Item a owl:Class ;
+    rdfs:label "item"@en ;
+    rdfs:comment "A physical object that can be used as an instrument in an action or event."@en .
+
+nac:Weapon a owl:Class ;
+    rdfs:subClassOf nac:Item ;
+    rdfs:label "weapon"@en ;
+    rdfs:comment "An item whose primary purpose is combat or violence."@en .
+
+nac:Artefact a owl:Class ;
+    rdfs:subClassOf nac:Item ;
+    rdfs:label "artefact"@en ;
+    rdfs:comment "A crafted object with significance in the story."@en .
+
+#
+# Object properties
+#
+nac:hasAgent a owl:ObjectProperty ;
+    rdfs:subPropertyOf nev:involvesCharacter ;
+    rdfs:domain nac:Action ;
+    rdfs:label "has agent"@en ;
+    rdfs:comment "The character who performs the action."@en .
+
+nac:hasPatient a owl:ObjectProperty ;
+    rdfs:subPropertyOf nev:involvesCharacter ;
+    rdfs:domain nac:Action ;
+    rdfs:label "has patient"@en ;
+    rdfs:comment "The character or entity that the action is directed at or that is affected by it."@en .
+
+nac:hasPurpose a owl:ObjectProperty ;
+    rdfs:domain nac:IntentionalAction ;
+    rdfs:label "has purpose"@en ;
+    rdfs:comment "The goal or intention that motivates the intentional action."@en .
+
+nac:hasInstrument a owl:ObjectProperty ;
+    rdfs:domain nac:Action ;
+    rdfs:range nac:Item ;
+    rdfs:label "has instrument"@en ;
+    rdfs:comment "The item used to carry out the action. Answers the competency question: what item was used in event E?"@en .
+
+nac:hasResult a owl:ObjectProperty ;
+    rdfs:domain nac:Action ;
+    rdfs:label "has result"@en ;
+    rdfs:comment "The state of affairs or event that obtains as a direct consequence of this action."@en .
+
+nac:performedBy a owl:ObjectProperty ;
+    owl:inverseOf nac:hasAgent ;
+    rdfs:label "performed by"@en ;
+    rdfs:comment "Inverse of hasAgent."@en .
+
+#
+# Axioms
+#
+
+# Every action must have exactly one agent
+nac:Action rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nac:hasAgent ;
+    owl:minCardinality 1
+] .
+
+# Every intentional action must have at least one purpose
+nac:IntentionalAction rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nac:hasPurpose ;
+    owl:minCardinality 1
+] .
+
+# A violent action must have a patient
+nac:ViolentAction rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty nac:hasPatient ;
+    owl:minCardinality 1
+] .
+
+# A violent action performed intentionally is a ViolentIntentionalAction
+[
+    a owl:Class ;
+    owl:intersectionOf ( nac:ViolentAction nac:IntentionalAction )
+] rdfs:subClassOf nac:CoerciveAction .
+
+# A speech act that is intentional and results in an event is a performative speech act
+[
+    a owl:Class ;
+    owl:intersectionOf (
+        nac:SpeechAct
+        nac:IntentionalAction
+        [ a owl:Restriction ;
+          owl:onProperty nac:hasResult ;
+          owl:someValuesFrom nev:Event ]
+    )
+] rdfs:subClassOf nac:CoerciveAction .
+
+# Property chain: if A hasResult E and E causedBy A, consistency (identity chain)
+nac:hasResult owl:propertyChainAxiom ( nac:hasResult nev:causedBy ) .
