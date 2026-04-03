@@ -1,0 +1,151 @@
+#
+# Prefixes
+#
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix npo:  <http://purl.org/narn/place/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rcc:  <https://purl.org/region/rcc8/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+#
+# Ontology definition and metadata
+#
+npo: a owl:Ontology ;
+    owl:imports rcc: ;
+    rdfs:label "Place ontology"@en ;
+    rdfs:comment "An ontology module for places and spatial relations used in story plots."@en ;
+    dct:title "Place Ontology"@en ;
+    dct:created "2026-04-03T10:00:00+01:00"^^xsd:dateTime ;
+    dct:description "Defines a hierarchy of places and rich spatial relationships for modelling story locations. Builds on the Region Connection Calculus (RCC8) ontology."@en .
+
+#
+# Classes
+#
+npo:Place a owl:Class ;
+    rdfs:subClassOf rcc:Region ;
+    rdfs:label "place"@en ;
+    rdfs:comment "A named location that can appear in a story. Every place is also an RCC region, so all RCC8 spatial relations apply."@en .
+
+npo:Settlement a owl:Class ;
+    rdfs:subClassOf npo:Place ;
+    owl:disjointWith npo:WildArea ;
+    rdfs:label "settlement"@en ;
+    rdfs:comment "A place inhabited by people, such as a city, town, village, or stronghold."@en .
+
+npo:WildArea a owl:Class ;
+    rdfs:subClassOf npo:Place ;
+    owl:disjointWith npo:Settlement ;
+    rdfs:label "wild area"@en ;
+    rdfs:comment "An uninhabited or untamed stretch of land, such as a forest, mountain range, or moorland."@en .
+
+npo:Fortress a owl:Class ;
+    rdfs:subClassOf npo:Settlement ;
+    rdfs:label "fortress"@en ;
+    rdfs:comment "A heavily fortified settlement built for military defence."@en .
+
+npo:City a owl:Class ;
+    rdfs:subClassOf npo:Settlement ;
+    rdfs:label "city"@en ;
+    rdfs:comment "A large, organised settlement, often the seat of a lord or king."@en .
+
+npo:Cavern a owl:Class ;
+    rdfs:subClassOf npo:Place ;
+    rdfs:label "cavern"@en ;
+    rdfs:comment "An underground place, such as a cave system or subterranean city."@en .
+
+npo:Forest a owl:Class ;
+    rdfs:subClassOf npo:WildArea ;
+    rdfs:label "forest"@en ;
+    rdfs:comment "A large area covered by trees."@en .
+
+npo:Mountain a owl:Class ;
+    rdfs:subClassOf npo:WildArea ;
+    rdfs:label "mountain"@en ;
+    rdfs:comment "A high natural elevation of the earth's surface."@en .
+
+npo:River a owl:Class ;
+    rdfs:subClassOf npo:Place ;
+    rdfs:label "river"@en ;
+    rdfs:comment "A flowing body of water. Rivers often serve as natural boundaries between regions."@en .
+
+npo:GeographicRegion a owl:Class ;
+    rdfs:subClassOf npo:Place ;
+    rdfs:label "geographic region"@en ;
+    rdfs:comment "A large area of land that may contain multiple settlements and wild areas."@en .
+
+#
+# Object properties
+#
+npo:isSubpartOf a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+    rdfs:subPropertyOf rcc:ntpp ;
+    rdfs:domain npo:Place ;
+    rdfs:range npo:Place ;
+    rdfs:label "is subpart of"@en ;
+    rdfs:comment "The first place is entirely contained within the second, with no shared boundary. Transitive: if A is subpart of B and B is subpart of C, then A is subpart of C. Irreflexive: no place is a subpart of itself."@en .
+
+npo:hasSubpart a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+    owl:inverseOf npo:isSubpartOf ;
+    rdfs:domain npo:Place ;
+    rdfs:range npo:Place ;
+    rdfs:label "has subpart"@en ;
+    rdfs:comment "The first place entirely contains the second place. Inverse of isSubpartOf."@en .
+
+npo:borders a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:subPropertyOf rcc:ec ;
+    rdfs:domain npo:Place ;
+    rdfs:range npo:Place ;
+    rdfs:label "borders"@en ;
+    rdfs:comment "Two places share a boundary but do not overlap. Symmetric: if A borders B then B borders A."@en .
+
+npo:isLocatedIn a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain npo:Place ;
+    rdfs:range npo:Place ;
+    rdfs:label "is located in"@en ;
+    rdfs:comment "A place is located in another place. More general than isSubpartOf — covers both strict containment and loose geographical membership."@en .
+
+npo:isDisconnectedFrom a owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:subPropertyOf rcc:dc ;
+    rdfs:domain npo:Place ;
+    rdfs:range npo:Place ;
+    rdfs:label "is disconnected from"@en ;
+    rdfs:comment "Two places share no common part and do not touch. Being in one disconnected place and another simultaneously is impossible."@en .
+
+npo:hasCapital a owl:ObjectProperty ;
+    rdfs:domain npo:GeographicRegion ;
+    rdfs:range npo:Settlement ;
+    rdfs:label "has capital"@en ;
+    rdfs:comment "Relates a geographic region to its principal settlement."@en .
+
+#
+# Axioms
+#
+
+# A settlement that contains only wild-area subparts is a contradiction
+# (a settlement must have at least one settlement subpart if it has subparts)
+# — expressed as: if X isSubpartOf Y and X is a WildArea, Y need not be wild
+# The key constraint: disconnected places cannot be occupied simultaneously (enforced in event.ttl)
+
+# Every fortress is also a settlement
+npo:Fortress rdfs:subClassOf npo:Settlement .
+
+# A cavern that is subpart of a settlement is an underground city district
+[
+    a owl:Class ;
+    owl:intersectionOf (
+        npo:Cavern
+        [ a owl:Restriction ;
+          owl:onProperty npo:isSubpartOf ;
+          owl:someValuesFrom npo:Settlement ]
+    )
+] rdfs:subClassOf npo:Settlement ;
+    rdfs:comment "A cavern located inside a settlement counts as an underground settlement (e.g. Menegroth)."@en .
+
+# A geographic region must contain at least one place
+npo:GeographicRegion rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty npo:hasSubpart ;
+    owl:minCardinality 1
+] .
