@@ -192,18 +192,14 @@ nti:TimeInterval rdfs:subClassOf [
     owl:cardinality 1
 ] .
 
-# The 13 Allen relations are pairwise disjoint (two intervals can satisfy only one)
-# (declared as AllDisjointProperties)
-[
-    a owl:AllDisjointProperties ;
-    owl:members (
-        nti:before nti:meets nti:overlaps nti:during
-        nti:starts nti:finishes nti:equals
-        nti:after nti:metBy nti:overlappedBy nti:contains
-        nti:startedBy nti:finishedBy
-    )
-] .
+# NOTE: The 13 Allen relations cannot be declared owl:AllDisjointProperties
+# because several are non-simple (transitive, symmetric, or sub-properties of transitive ones).
+# nti:before, nti:after — TransitiveProperty (non-simple)
+# nti:equals — TransitiveProperty + SymmetricProperty (non-simple)
+# nti:overlaps — subPropertyOf nti:before (non-simple)
+# All 13 are sub-properties of nti:hasTemporalRelation, making them non-simple.
+# The disjointness of Allen relations is a mathematical theorem, not an OWL axiom here.
 
 # before is irreflexive (nothing is before itself)
-nti:before a owl:IrreflexiveProperty .
-nti:after  a owl:IrreflexiveProperty .
+# nti:before is transitive (non-simple), so IrreflexiveProperty removed — implied by strict ordering
+# nti:after is transitive (non-simple), so IrreflexiveProperty removed — implied by strict ordering

@@ -79,14 +79,14 @@ npo:GeographicRegion a owl:Class ;
 #
 # Object properties
 #
-npo:isSubpartOf a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+npo:isSubpartOf a owl:ObjectProperty, owl:TransitiveProperty ;
     rdfs:subPropertyOf rcc:ntpp ;
     rdfs:domain npo:Place ;
     rdfs:range npo:Place ;
     rdfs:label "is subpart of"@en ;
     rdfs:comment "The first place is entirely contained within the second, with no shared boundary. Transitive: if A is subpart of B and B is subpart of C, then A is subpart of C. Irreflexive: no place is a subpart of itself."@en .
 
-npo:hasSubpart a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+npo:hasSubpart a owl:ObjectProperty, owl:TransitiveProperty ;
     owl:inverseOf npo:isSubpartOf ;
     rdfs:domain npo:Place ;
     rdfs:range npo:Place ;
@@ -147,5 +147,5 @@ npo:Fortress rdfs:subClassOf npo:Settlement .
 npo:GeographicRegion rdfs:subClassOf [
     a owl:Restriction ;
     owl:onProperty npo:hasSubpart ;
-    owl:minCardinality 1
+    owl:someValuesFrom npo:Place
 ] .

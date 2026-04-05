@@ -1,68 +1,91 @@
+@prefix : <https://purl.org/region/rcc8/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rcc: <https://purl.org/region/rcc8/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://purl.org/region/rcc8/> .
 
-#
-# Ontology description
-#
-rcc: a owl:Ontology;
-    rdfs:label "The RCC8 ontology";
-    rdfs:comment "An ontology for the Region Connection Calculus."@en .
+<https://purl.org/region/rcc8/> rdf:type owl:Ontology ;
+                                 rdfs:comment "An ontology for the Region Connection Calculus."@en ;
+                                 rdfs:label "The RCC8 ontology" .
 
-#
-# Class
-#
-rcc:Region a owl:Class;
-    rdfs:label "region"@en;
-    rdfs:comment "A continuous extent of space. Mathematically, given a topological space, this concepts corresponds to a compact subspace with finite diameter."@en .
+#################################################################
+#    Object Properties
+#################################################################
 
-#
-# Properties
-# (you should add additional axioms, as needed, to enrich the knowledge and allow additional deductions)
-#
-rcc:dc a owl:ObjectProperty;
-    rdfs:label "disconnected"@en;
-    rdfs:comment "The two regions are completely disconnected (there are no common pieces)."@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
+###  https://purl.org/region/rcc8/dc
+rcc:dc rdf:type owl:ObjectProperty ;
+       rdfs:domain rcc:Region ;
+       rdfs:range rcc:Region ;
+       rdfs:comment "The two regions are completely disconnected (there are no common pieces)."@en ;
+       rdfs:label "disconnected"@en .
 
-rcc:ec a owl:ObjectProperty;
-    rdfs:label "externally connected"@en;
-    rdfs:comment "the boundaries of the regions touch, but their interiors are disjoint"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
 
-rcc:po a owl:ObjectProperty;
-    rdfs:label "partially overlapping"@en;
-    rdfs:comment "the two regions partially overlap (there are disjoint sub parts, and some part of one is included in some part of the other"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
+###  https://purl.org/region/rcc8/ec
+rcc:ec rdf:type owl:ObjectProperty ;
+       rdfs:domain rcc:Region ;
+       rdfs:range rcc:Region ;
+       rdfs:comment "the boundaries of the regions touch, but their interiors are disjoint"@en ;
+       rdfs:label "externally connected"@en .
 
-rcc:eq a owl:ObjectProperty;
-    rdfs:label "equal"@en;
-    rdfs:comment "two regions have the same spatial extent"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
 
-rcc:tpp a owl:ObjectProperty;
-    rdfs:label "tangential proper part"@en;
-    rdfs:comment "the first region is entirely inside the second region and their boundaries touch each other from the inside"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
+###  https://purl.org/region/rcc8/eq
+rcc:eq rdf:type owl:ObjectProperty ;
+       rdfs:domain rcc:Region ;
+       rdfs:range rcc:Region ;
+       rdfs:comment "two regions have the same spatial extent"@en ;
+       rdfs:label "equal"@en .
 
-rcc:tppi a owl:ObjectProperty;
-    rdfs:label "tangential proper part inverse"@en;
-    rdfs:comment "the first region entirely contains the second region and their boundaries touch each other from the inside"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
 
-rcc:ntpp a owl:ObjectProperty;
-    rdfs:label "non-tangential proper part	the first region is entirely inside the second region and their boundaries do not touch"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
+###  https://purl.org/region/rcc8/ntpp
+rcc:ntpp rdf:type owl:ObjectProperty ;
+         rdfs:domain rcc:Region ;
+         rdfs:range rcc:Region ;
+         rdfs:label "non-tangential proper part"@en .
 
-rcc:ntppi a owl:ObjectProperty;
-    rdfs:label "non-tangential proper part inverse"@en;
-    rdfs:comment "the first region entirely contains the second region and their boundaries do not touch"@en;
-    rdfs:domain rcc:Region;
-    rdfs:range rcc:Region .
+
+###  https://purl.org/region/rcc8/ntppi
+rcc:ntppi rdf:type owl:ObjectProperty ;
+          rdfs:domain rcc:Region ;
+          rdfs:range rcc:Region ;
+          rdfs:comment "the first region entirely contains the second region and their boundaries do not touch"@en ;
+          rdfs:label "non-tangential proper part inverse"@en .
+
+
+###  https://purl.org/region/rcc8/po
+rcc:po rdf:type owl:ObjectProperty ;
+       rdfs:domain rcc:Region ;
+       rdfs:range rcc:Region ;
+       rdfs:comment "the two regions partially overlap (there are disjoint sub parts, and some part of one is included in some part of the other"@en ;
+       rdfs:label "partially overlapping"@en .
+
+
+###  https://purl.org/region/rcc8/tpp
+rcc:tpp rdf:type owl:ObjectProperty ;
+        rdfs:domain rcc:Region ;
+        rdfs:range rcc:Region ;
+        rdfs:comment "the first region is entirely inside the second region and their boundaries touch each other from the inside"@en ;
+        rdfs:label "tangential proper part"@en .
+
+
+###  https://purl.org/region/rcc8/tppi
+rcc:tppi rdf:type owl:ObjectProperty ;
+         rdfs:domain rcc:Region ;
+         rdfs:range rcc:Region ;
+         rdfs:comment "the first region entirely contains the second region and their boundaries touch each other from the inside"@en ;
+         rdfs:label "tangential proper part inverse"@en .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  https://purl.org/region/rcc8/Region
+rcc:Region rdf:type owl:Class ;
+           rdfs:comment "A continuous extent of space. Mathematically, given a topological space, this concepts corresponds to a compact subspace with finite diameter."@en ;
+           rdfs:label "region"@en .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi

@@ -105,18 +105,18 @@ place.ttl          social.ttl          time.ttl
 <h3>Properties</h3>
 <table>
   <tr><th>Term</th><th>Label</th><th>Characteristics</th><th>Description</th></tr>
-  <tr><td><code>npo:isSubpartOf</code></td><td>is subpart of</td><td>Transitive, Irreflexive; subPropertyOf <code>rcc:ntpp</code></td><td>X is entirely inside Y with no shared boundary.</td></tr>
-  <tr><td><code>npo:hasSubpart</code></td><td>has subpart</td><td>Transitive, Irreflexive; inverse of isSubpartOf</td><td>Y entirely contains X.</td></tr>
+  <tr><td><code>npo:isSubpartOf</code></td><td>is subpart of</td><td>Transitive; subPropertyOf <code>rcc:ntpp</code></td><td>X is entirely inside Y with no shared boundary.</td></tr>
+  <tr><td><code>npo:hasSubpart</code></td><td>has subpart</td><td>Transitive; inverse of isSubpartOf</td><td>Y entirely contains X.</td></tr>
   <tr><td><code>npo:borders</code></td><td>borders</td><td>Symmetric; subPropertyOf <code>rcc:ec</code></td><td>Two places share a boundary but do not overlap.</td></tr>
   <tr><td><code>npo:isLocatedIn</code></td><td>is located in</td><td>Transitive</td><td>General containment, looser than isSubpartOf.</td></tr>
-  <tr><td><code>npo:isDisconnectedFrom</code></td><td>is disconnected from</td><td>Symmetric; subPropertyOf <code>rcc:dc</code></td><td>No common part, no touching. Used in the simultaneity axiom.</td></tr>
+  <tr><td><code>npo:isDisconnectedFrom</code></td><td>is disconnected from</td><td>Symmetric; subPropertyOf <code>rcc:dc</code></td><td>No common part, no touching. Asserted on instance pairs to express spatial impossibility (e.g., Angband and Nargothrond).</td></tr>
   <tr><td><code>npo:hasCapital</code></td><td>has capital</td><td>—</td><td>Links a region to its principal settlement.</td></tr>
 </table>
 
 <div class="axiom-box">
   <strong>Key axioms:</strong>
   <ul>
-    <li><code>isSubpartOf</code> is <em>transitive</em> and <em>irreflexive</em> — no place is a subpart of itself.</li>
+    <li><code>isSubpartOf</code> is <em>transitive</em> — strict containment with no shared boundary.</li>
     <li><code>Settlement</code> and <code>WildArea</code> are <em>disjoint</em>.</li>
     <li>A <code>Cavern</code> that <code>isSubpartOf</code> some <code>Settlement</code> is inferred to be a <code>Settlement</code> (e.g., Menegroth).</li>
     <li>A <code>GeographicRegion</code> must have at least one subpart (cardinality ≥ 1 on <code>hasSubpart</code>).</li>
@@ -191,7 +191,7 @@ place.ttl          social.ttl          time.ttl
   <strong>Key axioms:</strong>
   <ul>
     <li>All 13 Allen relations are pairwise disjoint (<code>owl:AllDisjointProperties</code>) — two intervals can satisfy only one.</li>
-    <li><code>before</code> and <code>after</code> are <em>irreflexive</em> and <em>transitive</em>.</li>
+    <li><code>before</code> and <code>after</code> are <em>transitive</em> (irreflexivity is semantically implied by strict temporal ordering).</li>
     <li><code>equals</code> is <em>symmetric</em> and <em>transitive</em>.</li>
     <li>All relations are sub-properties of <code>nti:hasTemporalRelation</code>, allowing generic temporal queries.</li>
   </ul>
@@ -228,7 +228,7 @@ place.ttl          social.ttl          time.ttl
   <tr><td><code>nev:hasTemporalExtent</code></td><td>Event → TimeInterval</td><td>When the event takes place.</td></tr>
   <tr><td><code>nev:causedBy</code></td><td>Event → Event</td><td>Direct trigger.</td></tr>
   <tr><td><code>nev:resultsIn</code></td><td>Event → Event</td><td>Inverse of causedBy.</td></tr>
-  <tr><td><code>nev:precedes</code></td><td>Event → Event</td><td>Transitive, Irreflexive; subPropertyOf nti:before.</td></tr>
+  <tr><td><code>nev:precedes</code></td><td>Event → Event</td><td>Transitive; subPropertyOf nti:before.</td></tr>
   <tr><td><code>nev:hasItem</code></td><td>Event → owl:Thing</td><td>Object involved in the event.</td></tr>
 </table>
 
@@ -238,7 +238,7 @@ place.ttl          social.ttl          time.ttl
     <li>A <code>Battle</code> must involve at least one <code>meo:EvilBeing</code> (restriction on involvesCharacter).</li>
     <li><code>Birth</code> and <code>Death</code> each have exactly 1 subject (cardinality constraint).</li>
     <li>A <code>War</code> must have at least one <code>Battle</code> as a part.</li>
-    <li><strong>Simultaneity axiom:</strong> events occurring at disconnected places cannot share a character at the same time — enforced by a nested restriction using <code>npo:isDisconnectedFrom</code>.</li>
+    <li><strong>Spatial disconnection</strong> is asserted on individual place pairs (e.g., <code>narn:angband npo:isDisconnectedFrom narn:nargothrond</code>) to represent locations that cannot be occupied simultaneously. The formal simultaneity constraint was omitted from the OWL axioms to preserve consistency with HermiT.</li>
   </ul>
 </div>
 
@@ -349,12 +349,45 @@ place.ttl          social.ttl          time.ttl
   <li><code>narn:turinDeath</code> — Túrin commands Gurthang to slay him (<strong>Resolution</strong>)</li>
 </ol>
 
+<h3>Actions</h3>
+<table>
+  <tr><th>Instance</th><th>Types</th><th>Notes</th></tr>
+  <tr><td><code>narn:turinSuicide</code></td><td>IntentionalAction, ViolentAction</td><td>Túrin commands Gurthang to slay him; agent and patient are both Túrin</td></tr>
+  <tr><td><code>narn:turinKillsBelegAction</code></td><td>UnintentionalAction, ViolentAction</td><td>Túrin mistakes Beleg for an enemy in darkness</td></tr>
+  <tr><td><code>narn:morgothCurseAction</code></td><td>IntentionalAction, SpeechAct, CoerciveAction</td><td>Morgoth pronounces doom on Húrin's family</td></tr>
+</table>
+
+<h3>Items</h3>
+<table>
+  <tr><th>Instance</th><th>Type</th><th>Notes</th></tr>
+  <tr><td><code>narn:gurthang</code></td><td>nac:Weapon</td><td>The black sword, reforged from Anglachel; used by Túrin to kill Beleg, Glaurung, and himself</td></tr>
+</table>
+
+<h3>Social Groups</h3>
+<table>
+  <tr><th>Instance</th><th>Type</th><th>Members</th></tr>
+  <tr><td><code>narn:houseOfHadorKingdom</code></td><td>loc:Kingdom</td><td>Húrin, Morwen, Túrin</td></tr>
+  <tr><td><code>narn:nargothrondFellowship</code></td><td>loc:Fellowship</td><td>Túrin, Finduilas</td></tr>
+</table>
+
+<h3>Time Intervals</h3>
+<table>
+  <tr><th>Instance</th><th>Years (FA)</th></tr>
+  <tr><td><code>narn:tirNirnaeth</code></td><td>472–472</td></tr>
+  <tr><td><code>narn:tirHurinCaptivity</code></td><td>472–499</td></tr>
+  <tr><td><code>narn:tirTurinYouth</code></td><td>473–484</td></tr>
+  <tr><td><code>narn:tirTurinExile</code></td><td>484–490</td></tr>
+  <tr><td><code>narn:tirNargothrond</code></td><td>490–496</td></tr>
+  <tr><td><code>narn:tirFallNargothrond</code></td><td>496–496</td></tr>
+  <tr><td><code>narn:tirTurinDeath</code></td><td>499–499</td></tr>
+</table>
+
 <!-- ─────────────────────────────── 9. COMPETENCY QUESTIONS ─────────────────────────────── -->
 <h2 id="cq">9. Competency Questions</h2>
 
 <div class="cq">
   <strong>Q: Who is parent of Túrin?</strong><br>
-  Query: <code>?x fo:isAParentOf narn:turin</code><br>
+  Query: <code>narn:hurin fo:isAParentOf narn:turin</code> (asserted) or <code>narn:turin fo:isASonOf ?x</code><br>
   Answer: <code>narn:hurin</code>, <code>narn:morwen</code>
 </div>
 
@@ -366,8 +399,8 @@ place.ttl          social.ttl          time.ttl
 
 <div class="cq">
   <strong>Q: Where did Túrin go during the story?</strong><br>
-  Query: <code>?e nev:involvesCharacter narn:turin . ?e nev:occursAt ?place</code><br>
-  Answer: Menegroth (Doriath), Dimbar, Nargothrond, Brethil
+  Query: <code>?e nev:involvesCharacter narn:turin . ?e nev:occursAt ?place</code> (also via hasAgent, hasSubject, hasPatient)<br>
+  Answer: Dor-lómin (departure), Menegroth/Doriath (arrival and exile), Angband (subject of Morgoth's curse), Dimbar (death of Beleg), Nargothrond (Fall), Brethil (slays Glaurung, suicide)
 </div>
 
 <div class="cq">
@@ -379,7 +412,7 @@ place.ttl          social.ttl          time.ttl
 <div class="cq">
   <strong>Q: Did the Nirnaeth happen before the Fall of Nargothrond?</strong><br>
   Query: <code>narn:nirnaeth nev:precedes narn:fallOfNargothrond</code><br>
-  Answer: Yes (transitively via intermediate events)
+  Answer: Yes — via the transitive chain: Battle of Unnumbered Tears → Capture of Húrin → Curse of Morgoth → Túrin's exile → Death of Beleg → Fall of Nargothrond. Requires the OWL reasoner to close transitivity of <code>nev:precedes</code>.
 </div>
 
 <div class="cq">
@@ -390,7 +423,7 @@ place.ttl          social.ttl          time.ttl
 
 <div class="cq">
   <strong>Q: Is it possible to be in Angband and Nargothrond at the same time?</strong><br>
-  Answer: No — <code>narn:angband npo:isDisconnectedFrom narn:nargothrond</code> and the simultaneity axiom in event.ttl rules this out.
+  Answer: No — <code>narn:angband npo:isDisconnectedFrom narn:nargothrond</code> is explicitly asserted in the instance file. The formal OWL simultaneity axiom was not included (it caused inconsistency with HermiT); the impossibility is instead represented through the disconnection assertions on individual place pairs.
 </div>
 
 <div class="cq">
@@ -435,7 +468,7 @@ place.ttl          social.ttl          time.ttl
 <p>The assistant was asked about the ontological distinction between events and actions (citing Davidson's action theory). It suggested the agent/patient/purpose/instrument/result property structure, noting that intentional actions require a purpose while unintentional ones do not. The distinction between <em>physical</em>, <em>speech</em>, and <em>mental</em> actions was also suggested by the assistant based on philosophy of action literature.</p>
 
 <h3>OWL axiom design</h3>
-<p>The assistant suggested using <code>owl:AllDisjointProperties</code> for the Allen relations (ensuring mutual exclusivity) and the property chain <code>isMemberOf ∘ isLordOf</code> for deriving allegiance. The simultaneity impossibility axiom was designed with the assistant's guidance, using nested OWL restrictions over <code>npo:isDisconnectedFrom</code>.</p>
+<p>The assistant suggested using <code>owl:AllDisjointProperties</code> for the Allen relations (ensuring mutual exclusivity) and the property chain <code>isMemberOf ∘ isLordOf</code> for deriving allegiance. A simultaneity impossibility axiom was initially designed with the assistant's guidance using nested OWL restrictions over <code>npo:isDisconnectedFrom</code>; however, it was subsequently removed because it caused the ontology to become inconsistent under HermiT (the axiom made <code>owl:Thing</code> equivalent to <code>owl:Nothing</code>). Spatial impossibility is instead represented through explicit <code>isDisconnectedFrom</code> assertions on individual place pairs in the instance file.</p>
 
 <hr>
 <p><small>Last modified: 2026-04-03. Ontology files in Turtle format; this documentation in HTML.</small></p>

@@ -17,7 +17,7 @@
 meo: a owl:Ontology;
      owl:imports fo:;
      rdfs:label "The Middle-earth ontology"@en;
-     rdfs:comment "An ontology for J.R.R. TolkienÊ¼s legendarium."@en;
+     rdfs:comment "An ontology for J.R.R. Tolkienʼs legendarium."@en;
      dct:title "The Middle-earth ontology"@en;
      dct:created "2023-11-19T07:42:42+01:00"^^xsd:dateTime;
      dct:creator az:me .
@@ -28,7 +28,7 @@ meo: a owl:Ontology;
 meo:God a owl:Class;
         owl:oneOf (meo:Eru);
         rdfs:label "God"@en;
-        rdfs:comment "A sperior entity. A singleton class that only contains Eru IlÃºvatar, the One Allfather."@en .
+        rdfs:comment "A sperior entity. A singleton class that only contains Eru Ilúvatar, the One Allfather."@en .
 
 meo:Immortal a owl:Class;
              owl:disjointWith meo:Mortal;
@@ -47,7 +47,7 @@ meo:EvilBeing a owl:Class;
 meo:Ainu a owl:Class;
          rdfs:subClassOf meo:Immortal;
          rdfs:label "Ainu"@qya, "Holy one"@en;
-         rdfs:comment "The Ainur (plural form of Ainu) are the spirits created by Eru IlÃºvatar before time existed"@en .
+         rdfs:comment "The Ainur (plural form of Ainu) are the spirits created by Eru Ilúvatar before time existed"@en .
 
 meo:Vala a owl:Class;
          rdfs:subClassOf meo:Ainu;
@@ -60,26 +60,26 @@ meo:Maia a owl:Class;
          rdfs:comment "The Maiar (plural form of Maia) are Ainur who entered Arda and serve the Valar."@en .
 
 meo:Eruhin a owl:Class;
-           rdfs:label "Eruhin"@qya, "Child of IlÃºvatar"@en;
+           rdfs:label "Eruhin"@qya, "Child of Ilúvatar"@en;
            skos:altLabel "Child of Eru"@en;
-           rdfs:comment "The EruhÃ­ni (plural form of Eruhin), literally â€œthe Children of Eruâ€, are usually called the â€œChildren of IlÃºvatarâ€. They are the Elves and Men. â€œChildren of IlÃºvatarâ€ is used to collectively refer to the two races of Men and Elves, and the singular form is rarely used."@en .
+           rdfs:comment "The Eruhíni (plural form of Eruhin), literally â€œthe Children of Eruâ€, are usually called the â€œChildren of Ilúvatarâ€. They are the Elves and Men. â€œChildren of Ilúvatarâ€ is used to collectively refer to the two races of Men and Elves, and the singular form is rarely used."@en .
 
-meo:QuendÃ« a owl:Class;
+meo:Quendë a owl:Class;
            rdfs:subClassOf meo:Eruhin, meo:Immortal;
-           rdfs:label "QuendÃ«"@qya, "Elf"@en;
+           rdfs:label "Quendë"@qya, "Elf"@en;
            skos:altLabel "one that speaks"@en, "Firstborn"@en, "Elda"@qya;
-           rdfs:comment "The Quendi (plural form of QuendÃ«) are the first born of the Children of IlÃºvatar, the Elves. They are named thus because they were the only ones who spoke when they first appeared, before Men and Dwarves came to be. They are more often called the Eldar."@en .
+           rdfs:comment "The Quendi (plural form of Quendë) are the first born of the Children of Ilúvatar, the Elves. They are named thus because they were the only ones who spoke when they first appeared, before Men and Dwarves came to be. They are more often called the Eldar."@en .
 
 meo:Elda a owl:Class;
-         owl:equivalentTo meo:QuendÃ«;
+         owl:equivalentClass meo:Quendë;
          rdfs:label "Elda"@qya, "Eledh"@sjn, "Elf"@en;
          skos:altLabel "of the stars"@en, "person of the stars"@en, "Firstborn"@en;
-         rdfs:comment "The Eldar (plural form of Elda) are the Elves. They initially called themselves the Quendi, but the Vala OromÃ«, who met them at lake CuiviÃ©nen under the stars, called them the Eldar. Now only the Quendi who followed OromÃ« to the West call themselves Eldar."@en .
+         rdfs:comment "The Eldar (plural form of Elda) are the Elves. They initially called themselves the Quendi, but the Vala Oromë, who met them at lake Cuiviénen under the stars, called them the Eldar. Now only the Quendi who followed Oromë to the West call themselves Eldar."@en .
 
 meo:Atan a owl:Class;
          rdfs:label "Atan"@qya, "Adan"@sjn, "Man"@en;
-         skos:altLabel "Secondborn"@en, "Hildo"@qya, "Follower"@en, "After-comer"@en, "ApanÃ³na"@qya, "After-born"@en, "Engwa"@qya, "Sickly"@en, "FÃ­rima"@qya, "Mortal"@en, "Human"@en; 
-         rdfs:comment "The Atani (plural form of Atan) are the second born of the Children of IlÃºvatar, the Men (i.e. Humans, not male people). They were given many names also by the Eldar."@en .
+         skos:altLabel "Secondborn"@en, "Hildo"@qya, "Follower"@en, "After-comer"@en, "Apanóna"@qya, "After-born"@en, "Engwa"@qya, "Sickly"@en, "Fírima"@qya, "Mortal"@en, "Human"@en; 
+         rdfs:comment "The Atani (plural form of Atan) are the second born of the Children of Ilúvatar, the Men (i.e. Humans, not male people). They were given many names also by the Eldar."@en .
 
 meo:Adan a owl:Class;
          owl:subClassOf meo:Atan;
@@ -102,17 +102,17 @@ meo:Peredhel a owl:Class;
 meo:Casar a owl:Class;
           owl:subClassOf meo:Mortal;
           rdfs:label "Casar"@qya, "Naug"@sjn, "Dwarf"@en;
-          skos:altLabel "AulÃ«onna"@qya, "Child of AulÃ«"@en;
-          rdfs:comment "The Casari (plural form of Casar in Quenya), more often called with the Sindarin variant Naugrim (plural of Naug in Sindarin), are the Dwarves created by the Vala AulÃ«."@en .
+          skos:altLabel "Aulëonna"@qya, "Child of Aulë"@en;
+          rdfs:comment "The Casari (plural form of Casar in Quenya), more often called with the Sindarin variant Naugrim (plural of Naug in Sindarin), are the Dwarves created by the Vala Aulë."@en .
 
 meo:Torog a owl:Class;
           rdfs:subClassOf meo:EvilBeing;
           rdfs:label "torog"@sjn, "troll"@en;
           rdfs:comment "The *Teryg (probably the plural form of Torog in Sindarin) are the Trolls, large humanoid monsters of great physical strength and weak intellect."@en .
 
-meo:LÃ³cÃ« a owl:Class;
+meo:Lócë a owl:Class;
          rdfs:subClassOf meo:EvilBeing;
-         rdfs:label "LÃ³cÃ«"@qya, "Dragon"@en;
+         rdfs:label "Lócë"@qya, "Dragon"@en;
          rdfs:comment "Evil and powerful monster."@en .
 
 
@@ -128,7 +128,7 @@ meo:served a owl:ObjectProperty;
 #
 meo:eru a meo:God;
         rdfs:label "Eru"@qya, "The One"@en;
-        skos:altLabel "IlÃºvatar"@qya, "Eru IlÃºvatar"@qya, "God"@en, "The Allfather"@en;
+        skos:altLabel "Ilúvatar"@qya, "Eru Ilúvatar"@qya, "God"@en, "The Allfather"@en;
         rdfs:comment "The one God creator of everything."@en .
 
 meo:melkor a meo:Vala;
@@ -183,11 +183,11 @@ meo:morgoth a meo:EvilBeing;
 [
     owl:intersectionOf ([
         a owl:Restriction;
-        owl:onProperty [owl:inversOf fo:isTheFatherOf];
+        owl:onProperty [owl:inverseOf fo:isTheFatherOf];
         owl:someValuesFrom meo:Atan
     ] [
         a owl:Restriction;
-        owl:onProperty [owl:inversOf fo:isTheMotherOf];
+        owl:onProperty [owl:inverseOf fo:isTheMotherOf];
         owl:someValuesFrom meo:Atan
     ])
 ] rdfs:subClassOf meo:Atan .
@@ -196,11 +196,11 @@ meo:morgoth a meo:EvilBeing;
 [
     owl:intersectionOf ([
         a owl:Restriction;
-        owl:onProperty [owl:inversOf fo:isTheFatherOf];
+        owl:onProperty [owl:inverseOf fo:isTheFatherOf];
         owl:someValuesFrom meo:Elda
     ] [
         a owl:Restriction;
-        owl:onProperty [owl:inversOf fo:isTheMotherOf];
+        owl:onProperty [owl:inverseOf fo:isTheMotherOf];
         owl:someValuesFrom meo:Elda
     ])
 ] rdfs:subClassOf meo:Elda .
