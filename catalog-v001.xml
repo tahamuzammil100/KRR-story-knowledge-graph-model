@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <uri name="http://purl.org/family/"                 uri="familly_relation_fo.ttl"/>
+    <uri name="http://purl.org/meo/"                    uri="Middle_earth_ontolog_meo.ttl"/>
+    <uri name="https://purl.org/region/rcc8/"           uri="rcc.ttl"/>
+    <uri name="http://purl.org/narn/place/"             uri="place.ttl"/>
+    <uri name="http://purl.org/narn/time/"              uri="time.ttl"/>
+    <uri name="http://purl.org/narn/social/"            uri="social.ttl"/>
+    <uri name="http://purl.org/narn/event/"             uri="event.ttl"/>
+    <uri name="http://purl.org/narn/action/"            uri="action.ttl"/>
+    <uri name="http://purl.org/narn/plot/"              uri="plot.ttl"/>
+</catalog>

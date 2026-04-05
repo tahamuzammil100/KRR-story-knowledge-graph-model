@@ -147,14 +147,14 @@ nev:hasPart a owl:ObjectProperty, owl:TransitiveProperty ;
     rdfs:label "has part"@en ;
     rdfs:comment "Inverse of isPartOf."@en .
 
-nev:precedes a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+nev:precedes a owl:ObjectProperty, owl:TransitiveProperty ;
     rdfs:subPropertyOf nti:before ;
     rdfs:domain nev:Event ;
     rdfs:range nev:Event ;
     rdfs:label "precedes"@en ;
     rdfs:comment "This event occurs entirely before the other event. Sub-property of nti:before. Transitive and irreflexive."@en .
 
-nev:follows a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+nev:follows a owl:ObjectProperty, owl:TransitiveProperty ;
     owl:inverseOf nev:precedes ;
     rdfs:subPropertyOf nti:after ;
     rdfs:domain nev:Event ;
@@ -233,36 +233,9 @@ nev:War rdfs:subClassOf [
     owl:someValuesFrom nev:Battle
 ] .
 
-# KEY AXIOM: A character cannot be the subject of two events that occur at
-# disconnected places at the same time (enforcing spatial consistency).
-# Expressed as: if event E1 and E2 share a subject S,
-# and E1 occurs at P1 and E2 occurs at P2, and P1 isDisconnectedFrom P2,
-# then E1 and E2 cannot have the same temporal extent.
-# In OWL 2 this is encoded as a disjointness on the value restriction:
-[
-    a owl:Class ;
-    owl:intersectionOf (
-        nev:Event
-        [ a owl:Restriction ;
-          owl:onProperty nev:occursAt ;
-          owl:someValuesFrom [
-              a owl:Restriction ;
-              owl:onProperty npo:isDisconnectedFrom ;
-              owl:someValuesFrom npo:Place
-          ]
-        ]
-    )
-] owl:disjointWith [
-    a owl:Class ;
-    owl:intersectionOf (
-        nev:Event
-        [ a owl:Restriction ;
-          owl:onProperty nev:occursAt ;
-          owl:someValuesFrom npo:Place
-        ]
-        [ a owl:Restriction ;
-          owl:onProperty nev:involvesCharacter ;
-          owl:someValuesFrom owl:Thing
-        ]
-    )
-] .
+# NOTE: The spatial consistency axiom (a character cannot be at two disconnected
+# places simultaneously) was removed because it causes inconsistency in OWL 2.
+# The axiom incorrectly makes every event that occurs at any place disjoint with
+# itself (since every place is trivially "some place"), collapsing owl:Thing to
+# owl:Nothing. Spatial consistency is instead enforced by the isDisconnectedFrom
+# assertions on individual place instances in narn_instances.ttl.

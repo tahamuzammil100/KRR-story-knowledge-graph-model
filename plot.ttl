@@ -119,13 +119,13 @@ npl:hasAntagonist a owl:ObjectProperty ;
     rdfs:label "has antagonist"@en ;
     rdfs:comment "The character or force that opposes the protagonist."@en .
 
-npl:follows a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+npl:follows a owl:ObjectProperty, owl:TransitiveProperty ;
     rdfs:domain npl:PlotPoint ;
     rdfs:range npl:PlotPoint ;
     rdfs:label "follows"@en ;
     rdfs:comment "One plot point comes narratively after another. Transitive and irreflexive."@en .
 
-npl:precedes a owl:ObjectProperty, owl:TransitiveProperty, owl:IrreflexiveProperty ;
+npl:precedes a owl:ObjectProperty, owl:TransitiveProperty ;
     owl:inverseOf npl:follows ;
     rdfs:domain npl:PlotPoint ;
     rdfs:range npl:PlotPoint ;
@@ -214,7 +214,5 @@ npl:Story rdfs:subClassOf [
 ] .
 
 # Plot points of different narrative stages are pairwise disjoint
-owl:AllDisjointClasses [
-    a owl:AllDisjointClasses ;
-    owl:members ( npl:Exposition npl:RisingAction npl:Climax npl:FallingAction npl:Resolution )
-] .
+[] a owl:AllDisjointClasses ;
+    owl:members ( npl:Exposition npl:RisingAction npl:Climax npl:FallingAction npl:Resolution ) .
